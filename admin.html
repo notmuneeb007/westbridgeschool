@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Westbridge School</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7fa; min-height: 100vh; }
+    .header { background: linear-gradient(135deg, #1a3a6b, #0d5e3a); padding: 20px 40px; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-size: 1.4rem; }
+    .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+    .stats { display: flex; gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: #fff; border-radius: 12px; padding: 20px 28px; flex: 1; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .stat-card h3 { color: #999; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .stat-card .num { font-size: 2rem; font-weight: 700; color: #1a3a6b; }
+    .stat-card.green .num { color: #0d5e3a; }
+    .table-wrapper { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow-x: auto; }
+    .table-wrapper h2 { padding: 20px 28px 0; font-size: 1.1rem; color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th { background: #f9fafb; color: #666; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; padding: 14px 16px; text-align: left; border-bottom: 2px solid #eee; white-space: nowrap; }
+    td { padding: 14px 16px; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 0.9rem; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafd; }
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+    .badge-green { background: #e6f7ee; color: #0d5e3a; }
+    .badge-red { background: #ffeaea; color: #c0392b; }
+    .loading { text-align: center; padding: 60px; color: #999; font-size: 1rem; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #1a3a6b, #0d5e3a); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; vertical-align: middle; margin-right: 8px; }
+    .refresh-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: background 0.2s; }
+    .refresh-btn:hover { background: rgba(255,255,255,0.25); }
+    .hash { font-family: 'Courier New', monospace; font-size: 0.75rem; color: #888; max-width: 200px; word-break: break-all; line-height: 1.4; }
+    .user-cell { display: flex; align-items: center; }
+    .avatar-placeholder { width: 36px; height: 36px; border-radius: 50%; background: #ddd; color: #999; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; vertical-align: middle; margin-right: 8px; }
+    .action-btns { display: flex; gap: 6px; }
+    .btn-edit { background: #e8f0fe; color: #1a3a6b; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: background 0.2s; }
+    .btn-edit:hover { background: #d0e2fc; }
+    .btn-delete { background: #ffeaea; color: #c0392b; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600; transition: background 0.2s; }
+    .btn-delete:hover { background: #ffd0d0; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: #fff; border-radius: 16px; padding: 32px; width: 420px; max-width: 90vw; box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+    .modal h2 { margin-bottom: 20px; color: #333; font-size: 1.2rem; }
+    .modal label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 4px; font-weight: 600; }
+    .modal input, .modal select { width: 100%; padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.95rem; margin-bottom: 16px; outline: none; transition: border 0.2s; }
+    .modal input:focus, .modal select:focus { border-color: #1a3a6b; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+    .modal-actions button { padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: opacity 0.2s; }
+    .modal-actions .cancel-btn { background: #f0f0f0; color: #666; }
+    .modal-actions .save-btn { background: linear-gradient(135deg, #1a3a6b, #0d5e3a); color: #fff; }
+    .modal-actions button:hover { opacity: 0.85; }
+    .toast { position: fixed; top: 20px; right: 20px; padding: 14px 24px; border-radius: 10px; color: #fff; font-size: 0.9rem; font-weight: 600; z-index: 2000; opacity: 0; transform: translateY(-10px); transition: all 0.3s; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #0d5e3a; }
+    .toast.error { background: #c0392b; }
+    .your-ip { background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 8px; font-size: 0.82rem; margin-left: 12px; }
+    .your-ip strong { color: #fff; }
+    .tabs { display: flex; gap: 0; margin-bottom: 24px; }
+    .tab-btn { padding: 12px 28px; background: #fff; border: none; border-radius: 10px 10px 0 0; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: #888; transition: all 0.2s; box-shadow: 0 -2px 8px rgba(0,0,0,0.04); }
+    .tab-btn.active { color: #1a3a6b; background: #fff; box-shadow: 0 -4px 12px rgba(0,0,0,0.08); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .add-ip-row { display: flex; gap: 10px; margin-bottom: 20px; align-items: flex-end; }
+    .add-ip-row input { padding: 10px 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border 0.2s; }
+    .add-ip-row input:focus { border-color: #1a3a6b; }
+    .add-ip-row .ip-input { flex: 1; }
+    .add-ip-row .label-input { width: 200px; }
+    .add-ip-row button { padding: 10px 20px; background: linear-gradient(135deg, #1a3a6b, #0d5e3a); color: #fff; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; }
+    .add-ip-row button:hover { opacity: 0.85; }
+    .btn-remove { background: #ffeaea; color: #c0392b; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: background 0.2s; }
+    .btn-remove:hover { background: #ffd0d0; }
+    .ip-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+    .ip-auto { background: #e8f0fe; color: #1a3a6b; }
+    .ip-admin { background: #e6f7ee; color: #0d5e3a; }
+    .ip-manual { background: #fff3e0; color: #e67e22; }
+
+    .lock-overlay { position: fixed; inset: 0; background: #1a1a2e; display: flex; align-items: center; justify-content: center; z-index: 999; }
+    .lock-box { background: #fff; border-radius: 16px; padding: 40px; width: 360px; box-shadow: 0 12px 40px rgba(0,0,0,0.3); text-align: center; }
+    .lock-box .icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .lock-box h2 { color: #333; font-size: 1.2rem; margin-bottom: 6px; }
+    .lock-box p { color: #888; font-size: 0.85rem; margin-bottom: 24px; }
+    .lock-box input { width: 100%; padding: 12px 16px; border: 2px solid #ddd; border-radius: 10px; font-size: 1.1rem; text-align: center; letter-spacing: 6px; outline: none; transition: border 0.2s; }
+    .lock-box input:focus { border-color: #1a3a6b; }
+    .lock-box .err { color: #c0392b; font-size: 0.82rem; margin-top: 10px; min-height: 20px; }
+    .lock-box button { width: 100%; padding: 12px; background: linear-gradient(135deg, #1a3a6b, #0d5e3a); color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 12px; transition: opacity 0.2s; }
+    .lock-box button:hover { opacity: 0.9; }
+    .main-content { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="lock-overlay" id="lockScreen">
+    <div class="lock-box">
+      <div class="icon">&#128274;</div>
+      <h2>Admin Access</h2>
+      <p>Enter password to continue</p>
+      <input type="text" style="position:absolute;top:-9999px;" autocomplete="username">
+      <input type="password" id="passwordInput" placeholder="Password" maxlength="20" autocomplete="new-password">
+      <div class="err" id="errMsg"></div>
+      <button onclick="checkPassword()">Unlock</button>
+    </div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+    <div class="header">
+      <h1>Westbridge School - Admin Panel</h1>
+      <div style="display:flex;align-items:center;">
+        <span class="your-ip">Your IP: <strong id="myIP">loading...</strong></span>
+        <button class="refresh-btn" onclick="refreshAll()">&#8635; Refresh</button>
+      </div>
+    </div>
+    <div class="container">
+      <div class="stats">
+        <div class="stat-card"><h3>Total Users</h3><div class="num" id="totalCount">-</div></div>
+        <div class="stat-card green"><h3>Verified</h3><div class="num" id="verifiedCount">-</div></div>
+        <div class="stat-card"><h3>Unverified</h3><div class="num" id="unverifiedCount">-</div></div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('users')">Users</button>
+        <button class="tab-btn" onclick="switchTab('ips')">Whitelisted IPs</button>
+      </div>
+      <div class="tab-content active" id="tab-users">
+      <div class="table-wrapper">
+        <h2>Registered Users</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>User</th>
+              <th>Email</th>
+              <th>Password (Hash)</th>
+              <th>Avatar</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>User ID</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTable">
+            <tr><td colspan="9" class="loading">Loading...</td></tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+  </div>
+
+  <div class="tab-content" id="tab-ips">
+    <div class="table-wrapper" style="padding: 20px 28px;">
+      <h2 style="padding:0; margin-bottom: 16px;">Whitelisted IP Addresses</h2>
+      <div class="add-ip-row">
+        <input type="text" class="ip-input" id="newIP" placeholder="IP Address (e.g. 192.168.1.1)">
+        <input type="text" class="label-input" id="newIPLabel" placeholder="Label (optional)">
+        <button onclick="addIP()">+ Add IP</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>IP Address</th>
+            <th>Label</th>
+            <th>Source</th>
+            <th>Added</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="ipsTable">
+          <tr><td colspan="6" class="loading">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <h2>Edit User</h2>
+      <input type="hidden" id="editUserId">
+      <label for="editName">Name</label>
+      <input type="text" id="editName" placeholder="Full name">
+      <label for="editEmail">Email</label>
+      <input type="email" id="editEmail" placeholder="Email address">
+      <label for="editVerified">Status</label>
+      <select id="editVerified">
+        <option value="true">Verified</option>
+        <option value="false">Unverified</option>
+      </select>
+      <div class="modal-actions">
+        <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+        <button class="save-btn" onclick="saveUser()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    async function checkPassword() {
+      const input = document.getElementById('passwordInput');
+      const err = document.getElementById('errMsg');
+      const password = input.value;
+      if (!password) { err.textContent = 'Enter password.'; return; }
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('lockScreen').style.display = 'none';
+          document.getElementById('mainContent').style.display = 'block';
+          if (data.ip) document.getElementById('myIP').textContent = data.ip;
+          loadUsers();
+          loadIPs();
+        } else {
+          err.textContent = data.message || 'Wrong password. Try again.';
+          input.value = '';
+          input.focus();
+        }
+      } catch (e) {
+        err.textContent = 'Server error. Try again.';
+        input.value = '';
+        input.focus();
+      }
+    }
+    document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+
+    window.addEventListener('load', function() {
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
+    });
+
+    function showToast(msg, type) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(() => { toast.className = 'toast'; }, 3000);
+    }
+
+    function refreshAll() {
+      const btn = document.querySelector('.refresh-btn');
+      btn.innerHTML = '&#8635; Loading...';
+      btn.disabled = true;
+      loadUsers();
+      loadIPs();
+      setTimeout(() => { btn.innerHTML = '&#8635; Refresh'; btn.disabled = false; }, 1500);
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      if (tab === 'users') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('tab-users').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('tab-ips').classList.add('active');
+        loadIPs();
+      }
+    }
+
+    function openEditModal(user) {
+      document.getElementById('editUserId').value = user._id;
+      document.getElementById('editName').value = user.name || '';
+      document.getElementById('editEmail').value = user.email || '';
+      document.getElementById('editVerified').value = user.verified ? 'true' : 'false';
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    async function saveUser() {
+      const id = document.getElementById('editUserId').value;
+      const name = document.getElementById('editName').value.trim();
+      const email = document.getElementById('editEmail').value.trim();
+      const verified = document.getElementById('editVerified').value === 'true';
+
+      if (!name || !email) {
+        showToast('Name and email are required!', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin/users/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, verified }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('User updated successfully!', 'success');
+          closeModal();
+          loadUsers();
+        } else {
+          showToast(data.message || 'Failed to update user.', 'error');
+        }
+      } catch (err) {
+        showToast('Server error. Try again.', 'error');
+      }
+    }
+
+    async function deleteUser(id) {
+      if (!confirm('Are you sure you want to delete this user?')) return;
+      try {
+        const res = await fetch('/api/admin/users/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('User deleted successfully!', 'success');
+          loadUsers();
+        } else {
+          showToast(data.message || 'Failed to delete user.', 'error');
+        }
+      } catch (err) {
+        showToast('Server error. Try again.', 'error');
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        const res = await fetch('/api/admin/users');
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        const users = data.users;
+        document.getElementById('totalCount').textContent = users.length;
+        document.getElementById('verifiedCount').textContent = users.filter(u => u.verified).length;
+        document.getElementById('unverifiedCount').textContent = users.filter(u => !u.verified).length;
+        const tbody = document.getElementById('usersTable');
+        if (users.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" class="loading">No users found.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = users.map((u, i) => {
+          const initial = (u.name || '?')[0].toUpperCase();
+          const date = new Date(u.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+          const badge = u.verified
+            ? '<span class="badge badge-green">Verified</span>'
+            : '<span class="badge badge-red">Unverified</span>';
+          const avatar = u.avatar
+            ? '<img src="' + u.avatar + '" style="width:36px;height:36px;border-radius:50%;object-fit:cover;vertical-align:middle;">'
+            : '<span class="avatar-placeholder">' + initial + '</span>';
+          const hash = u.password || 'N/A';
+          return '<tr>'
+            + '<td>' + (i + 1) + '</td>'
+            + '<td><div class="user-cell"><span class="avatar">' + initial + '</span>' + (u.name || '') + '</div></td>'
+            + '<td>' + (u.email || '') + '</td>'
+            + '<td><div class="hash">' + hash + '</div></td>'
+            + '<td>' + avatar + '</td>'
+            + '<td>' + badge + '</td>'
+            + '<td>' + date + '</td>'
+            + '<td><div class="hash">' + (u._id || '') + '</div></td>'
+            + '<td><div class="action-btns"><button class="btn-edit" onclick=\'openEditModal(' + JSON.stringify(u).replace(/'/g, "&#39;") + ')\'>&#9998; Edit</button><button class="btn-delete" onclick="deleteUser(\'' + u._id + '\')">&#10005; Delete</button></div></td>'
+            + '</tr>';
+        }).join('');
+      } catch (err) {
+        document.getElementById('usersTable').innerHTML =
+          '<tr><td colspan="9" class="loading">Error loading data.</td></tr>';
+      }
+    }
+
+    async function loadIPs() {
+      try {
+        const res = await fetch('/api/admin/whitelist');
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        const ips = data.ips;
+        const tbody = document.getElementById('ipsTable');
+        if (ips.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="loading">No IPs whitelisted yet.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = ips.map((item, i) => {
+          const date = new Date(item.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+          let badge = '';
+          if (item.addedBy === 'auto') badge = '<span class="ip-badge ip-auto">Auto</span>';
+          else if (item.addedBy === 'admin-login') badge = '<span class="ip-badge ip-admin">Admin Login</span>';
+          else badge = '<span class="ip-badge ip-manual">Manual</span>';
+          return '<tr>'
+            + '<td>' + (i + 1) + '</td>'
+            + '<td style="font-family:monospace;font-weight:600;">' + item.ip + '</td>'
+            + '<td>' + (item.label || '-') + '</td>'
+            + '<td>' + badge + '</td>'
+            + '<td>' + date + '</td>'
+            + '<td><button class="btn-remove" onclick="removeIP(\'' + item._id + '\')">Remove</button></td>'
+            + '</tr>';
+        }).join('');
+      } catch (err) {
+        document.getElementById('ipsTable').innerHTML =
+          '<tr><td colspan="6" class="loading">Error loading IPs.</td></tr>';
+      }
+    }
+
+    async function addIP() {
+      const ip = document.getElementById('newIP').value.trim();
+      const label = document.getElementById('newIPLabel').value.trim();
+      if (!ip) { showToast('Enter an IP address!', 'error'); return; }
+
+      try {
+        const res = await fetch('/api/admin/whitelist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ip, label }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('IP whitelisted!', 'success');
+          document.getElementById('newIP').value = '';
+          document.getElementById('newIPLabel').value = '';
+          loadIPs();
+        } else {
+          showToast(data.message || 'Failed to add IP.', 'error');
+        }
+      } catch (err) {
+        showToast('Server error. Try again.', 'error');
+      }
+    }
+
+    async function removeIP(id) {
+      if (!confirm('Remove this IP from whitelist?')) return;
+      try {
+        const res = await fetch('/api/admin/whitelist/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('IP removed!', 'success');
+          loadIPs();
+        } else {
+          showToast(data.message || 'Failed to remove IP.', 'error');
+        }
+      } catch (err) {
+        showToast('Server error. Try again.', 'error');
+      }
+    }
+
+    document.getElementById('editModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  </script>
+</body>
+</html>

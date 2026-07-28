@@ -1,0 +1,68 @@
+/* ===== ANIMATIONS ===== */
+.animate-fadeup {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: 0.2s;
+}
+.animate-left {
+  opacity: 0; transform: translateX(-40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.animate-right {
+  opacity: 0; transform: translateX(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.animate-up {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.animate-left.visible,
+.animate-right.visible,
+.animate-up.visible {
+  opacity: 1; transform: translate(0, 0);
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Stagger children */
+.stagger > *:nth-child(1) { transition-delay: 0.05s; }
+.stagger > *:nth-child(2) { transition-delay: 0.15s; }
+.stagger > *:nth-child(3) { transition-delay: 0.25s; }
+.stagger > *:nth-child(4) { transition-delay: 0.35s; }
+.stagger > *:nth-child(5) { transition-delay: 0.45s; }
+.stagger > *:nth-child(6) { transition-delay: 0.55s; }
+
+/* Hover card effect */
+.hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.hover-lift:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.14); }
+
+/* Gold shimmer on section labels */
+.section-label {
+  animation: shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%, 100% { box-shadow: none; }
+  50% { box-shadow: 0 0 12px rgba(212,160,23,0.35); }
+}
+
+/* Pulse for active nav */
+.nav-links a.active::after {
+  content: ''; display: block; height: 2px;
+  background: var(--gold); border-radius: 2px;
+  animation: expandWidth 0.4s ease forwards;
+}
+@keyframes expandWidth {
+  from { transform: scaleX(0); } to { transform: scaleX(1); }
+}
+
+/* Page transition */
+.page-enter {
+  animation: pageEnter 0.5s ease forwards;
+}
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}

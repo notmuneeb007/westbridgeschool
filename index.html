@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Westbridge Junior &amp; Upper School</title>
+  <link rel="icon" href="images/logo.jpg" type="image/jpeg"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+  <link rel="stylesheet" href="css/features.css"/>
+  <link rel="stylesheet" href="css/new-features.css"/>
+  <link rel="stylesheet" href="css/charts.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="css/geolocation.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+/* ===== BACK TO TOP BUTTON ===== */
+#backToTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1a6fd4;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 48px;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  transition: background 0.2s, transform 0.2s, opacity 0.3s;
+  opacity: 0.9;
+}
+#backToTopBtn:hover {
+  background: #1558b0;
+  transform: translateY(-3px);
+  opacity: 1;
+}
+body.dark-mode #backToTopBtn {
+  background: #4a9eff;
+  color: #111;
+}
+body.dark-mode #backToTopBtn:hover {
+  background: #2a7ee0;
+}
+</style>
+</head>
+<body>
+
+<!-- FULL-PAGE SKELETON LOADER -->
+<div class="page-skeleton" id="pageSkeleton">
+  <div class="sk-nav"><div class="sk-nav-inner"><div class="sk-logo"></div><div class="sk-nav-links"><div class="sk-line"></div><div class="sk-line"></div><div class="sk-line"></div></div></div></div>
+  <div class="sk-hero"><div class="sk-hero-content"><div class="sk-line" style="width:60%;height:2rem;margin:0 auto 1rem;"></div><div class="sk-line" style="width:80%;height:1.2rem;margin:0 auto;"></div></div></div>
+  <div class="sk-stats"><div class="sk-stat"></div><div class="sk-stat"></div><div class="sk-stat"></div><div class="sk-stat"></div></div>
+  <div class="sk-section"><div class="sk-two-col"><div class="sk-col"><div class="sk-line" style="width:40%;height:1.5rem;margin-bottom:1rem;"></div><div class="sk-line"></div><div class="sk-line" style="width:70%;"></div></div><div class="sk-col"><div class="sk-img"></div></div></div></div>
+  <div class="sk-section"><div class="sk-grid"><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div></div></div>
+</div>
+
+<!-- SKIP TO CONTENT LINK -->
+<a href="#mainContent" class="skip-link">Skip to main content</a>
+
+<!-- SCROLL PROGRESS INDICATOR -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <img src="images/logo.jpg" alt="Logo" data-tooltip="Westbridge School" data-tooltip-pos="right"/>
+      <span class="sidebar-logo-text" data-tooltip="Westbridge School" data-tooltip-pos="right">Westbridge School</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label" data-tooltip="Main Navigation" data-tooltip-pos="right">Main Menu</div>
+    <a href="#home"                class="sidebar-link" data-tooltip="Home" data-tooltip-pos="right"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="#aboutSection"       class="sidebar-link" data-tooltip="About School" data-tooltip-pos="right"><i class="fas fa-school"></i><span>About School</span></a>
+    <div class="sidebar-dropdown">
+      <a href="#" class="sidebar-link sidebar-dropdown-toggle" id="sb-academics" data-tooltip="Academics" data-tooltip-pos="right">
+        <i class="fas fa-book-open"></i><span>Academics</span>
+        <i class="fas fa-chevron-down sidebar-chevron"></i>
+      </a>
+      <div class="sidebar-dropdown-menu">
+        <a href="#teachersFullSection" class="sidebar-sub-link"><i class="fas fa-chalkboard-teacher"></i><span>Teachers</span></a>
+        <a href="#subjectsFullSection" class="sidebar-sub-link"><i class="fas fa-book-open"></i><span>Subjects</span></a>
+        <a href="#timetableSection" class="sidebar-sub-link" id="dd-timetable"><i class="fas fa-clock"></i><span>Timetable</span></a>
+      </div>
+    </div>
+    <a href="#applicationSection" class="sidebar-link" data-tooltip="Write Application" data-tooltip-pos="right"><i class="fas fa-pen-fancy"></i><span>Apply to Principal</span></a>
+    <a href="#contactSection"     class="sidebar-link" data-tooltip="Contact" data-tooltip-pos="right"><i class="fas fa-envelope"></i><span>Contact</span></a>
+    <a href="#contactMapSection"   class="sidebar-link" data-tooltip="Our Location on Map" data-tooltip-pos="right"><i class="fas fa-map-marker-alt"></i><span>Our Location</span></a>
+    <a href="#chartsSection" class="sidebar-link" data-tooltip="Charts & Analytics" data-tooltip-pos="right"><i class="fas fa-chart-bar"></i><span>Charts</span></a>
+    <a href="#resultsSection" class="sidebar-link" data-tooltip="Results" data-tooltip-pos="right"><i class="fas fa-trophy"></i><span>Results</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <i class="fas fa-graduation-cap" style="color:var(--gold);font-size:1.1rem;flex-shrink:0;" data-tooltip="Bridge to Success" data-tooltip-pos="right"></i>
+    <span>Bridge to Success</span>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content" id="mainContent">
+
+  <!-- TOP HEADER MARQUEE -->
+  <div class="top-header" id="topHeader">
+    <div class="top-header-inner">
+      <div class="top-header-label"><i class="fas fa-bullhorn"></i> <span>Latest News</span></div>
+      <div class="marquee-wrapper"><div style="display:flex;flex-direction:row;">
+        <div class="marquee-track">
+          <span class="marquee-item"><i class="fas fa-star"></i> Admissions Open 2025–26 — Register Now!</span>
+          <span class="marquee-sep">|</span>
+          <span class="marquee-item"><i class="fas fa-trophy"></i> Westbridge students won 1st position in Board Exams 2024</span>
+          <span class="marquee-sep">|</span>
+          <span class="marquee-item"><i class="fas fa-calendar-alt"></i> Annual Sports Day on June 20, 2025 — All students must participate</span>
+          <span class="marquee-sep">|</span>
+          <span class="marquee-item"><i class="fas fa-phone"></i> Contact us: +92 300 1234567</span>
+          <span class="marquee-sep">|</span>
+          <span class="marquee-item"><i class="fas fa-map-marker-alt"></i> Main Road, Lahore, Pakistan</span>
+          <span class="marquee-sep">|</span>
+        </div>
+        <div class="marquee-track" aria-hidden="true">
+          <span class="marquee-item"><i class="fas fa-star"></i> Admissions Open 2025–26 — Register Now!</span>
+          <span class="marquee-sep">|</span>
+          <span class="marquee-item"><i class="fas fa-trophy"></i> Westbridge students won 1st position in Board Exams 2024</span>
+          <span class="marquee-sep">|</span>
+          <span class="marquee-item"><i class="fas fa-calendar-alt"></i> Annual Sports Day on June 20, 2025 — All students must participate</span>
+          <span class="marquee-sep">|</span>
+          <span class="marquee-item"><i class="fas fa-phone"></i> Contact us: +92 300 1234567</span>
+          <span class="marquee-sep">|</span>
+          <span class="marquee-item"><i class="fas fa-map-marker-alt"></i> Main Road, Lahore, Pakistan</span>
+          <span class="marquee-sep">|</span>
+        </div>
+      </div></div>
+      <a href="#applicationSection" class="top-apply-btn" data-tooltip="Start Your Application" data-tooltip-pos="bottom">Apply Now</a>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <button class="hamburger" id="hamburger" aria-label="Toggle Sidebar" data-tooltip="Toggle Menu" data-tooltip-pos="bottom">
+          <span></span><span></span><span></span>
+        </button>
+        <img src="images/logo.jpg" alt="Westbridge Logo" class="nav-logo" data-tooltip="Westbridge School" data-tooltip-pos="bottom"/>
+        <span class="nav-title">Westbridge Junior &amp; Upper School</span>
+      </div>
+      <div class="nav-right">
+        <div class="search-wrapper"><input type="text" id="searchInput" placeholder="Search teachers, subjects..." autocomplete="off"><i class="fas fa-search search-icon"></i><div class="search-autocomplete" id="searchResults"></div></div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Mode">🌙 Dark</button>
+        <div class="nav-avatar" id="navAvatar" data-tooltip="Login / Register" data-tooltip-pos="bottom">
+          <div class="avatar-circle guest" id="avatarCircle">
+            <i class="fas fa-user"></i>
+          </div>
+          <span class="avatar-name" id="avatarName">Guest</span>
+          <div class="user-dropdown" id="userDropdown">
+            <button class="user-dropdown-item" id="ud-profile"><i class="fas fa-user-circle"></i> My Profile</button>
+            <button class="user-dropdown-item" id="ud-avatar"><i class="fas fa-camera"></i> Change Avatar</button>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" id="ud-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+  <!-- HERO -->
+  <header class="hero" id="home">
+    <div class="hero-overlay"></div>
+    <div class="hero-content animate-fadeup">
+      <p class="hero-tag">Bridge to Success · Excellence in Education</p>
+      <h1 class="hero-title"style="color: white;">Westbridge<br/><span>Junior &amp; Upper School</span></h1>
+      <p class="hero-subtitle" style="color: white;">
+    Bridging knowledge and character — one student at a time.
+</p>
+      <div class="hero-buttons">
+        <a href="#aboutSection" class="btn btn-primary" data-tooltip="Learn About Westbridge" data-tooltip-pos="bottom">Discover More</a>
+        <button class="btn btn-outline" id="hero-apply-btn" data-tooltip="Fill Admission Form" data-tooltip-pos="bottom" style="background-color:#10b981;color:#fff;border-color:#10b981;">Apply Now</button>
+    </div>
+  </header>
+
+  <!-- STATS BAND -->
+  <section class="stats-band">
+    <div class="stat-item"><span class="stat-num" data-target="850">0</span><span class="stat-label">Students</span></div>
+    <div class="stat-item"><span class="stat-num" data-target="42">0</span><span class="stat-label">Teachers</span></div>
+    <div class="stat-item"><span class="stat-num" data-target="12">0</span><span class="stat-label">Subjects</span></div>
+    <div class="stat-item"><span class="stat-num" data-target="25">0</span><span class="stat-label">Years of Excellence</span></div>
+  </section>
+
+  <!-- ABOUT FULL SECTION -->
+  <section class="section" id="aboutSection">
+    <div class="container two-col">
+      <div class="col-text animate-left">
+        <span class="section-label">Our Mission</span>
+        <h2>Education with <em>Purpose</em></h2>
+        <p>Our mission is to provide quality education that develops students academically, morally, and spiritually. We believe every student has unique potential waiting to be discovered.</p>
+        <p>We combine a rigorous academic curriculum with Islamic values, creating well-rounded individuals ready to serve their families, community, and nation.</p>
+      </div>
+      <div class="col-image animate-right">
+        <div class="image-card">
+          <img src="images/school.png" alt="Westbridge School Building"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="section bg-light">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Core Values</span>
+        <h2>What We <em>Stand For</em></h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2rem;">
+        <div class="subject-card animate-up" style="padding:2.5rem 1.5rem;">
+          <div class="subject-icon">🕌</div>
+          <div class="subject-name" style="font-size:1.1rem;margin-bottom:0.5rem;">Islamic Values</div>
+          <p style="font-size:0.88rem;color:var(--text-muted);">Grounding every student in faith, prayer, and moral character.</p>
+        </div>
+        <div class="subject-card animate-up" style="padding:2.5rem 1.5rem;">
+          <div class="subject-icon">🎓</div>
+          <div class="subject-name" style="font-size:1.1rem;margin-bottom:0.5rem;">Academic Excellence</div>
+          <p style="font-size:0.88rem;color:var(--text-muted);">Rigorous standards and dedicated teachers for outstanding results.</p>
+        </div>
+        <div class="subject-card animate-up" style="padding:2.5rem 1.5rem;">
+          <div class="subject-icon">🤝</div>
+          <div class="subject-name" style="font-size:1.1rem;margin-bottom:0.5rem;">Discipline</div>
+          <p style="font-size:0.88rem;color:var(--text-muted);">Cultivating respect, responsibility and strong work ethic.</p>
+        </div>
+        <div class="subject-card animate-up" style="padding:2.5rem 1.5rem;">
+          <div class="subject-icon">🌱</div>
+          <div class="subject-name" style="font-size:1.1rem;margin-bottom:0.5rem;">Growth Mindset</div>
+          <p style="font-size:0.88rem;color:var(--text-muted);">Encouraging curiosity, creativity, and lifelong learning.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY TIMELINE -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Our Journey</span>
+        <h2>School <em>History</em></h2>
+      </div>
+        <div style="max-width:680px;margin:0 auto;position:relative;padding-left:2rem;border-left:3px solid var(--green-light);">
+        <div style="margin-bottom:2.5rem;position:relative;" class="animate-up">
+          <span style="font-size:0.85rem;color:var(--gold);font-weight:700;">1998</span>
+          <h4 style="font-family:var(--font-heading);color:var(--green-dark);margin:4px 0;">School Founded</h4>
+          <p style="color:var(--text-muted);font-size:0.92rem;">Westbridge Junior & Upper School was established with 3 classrooms and 60 students.</p>
+        </div>
+        <div style="margin-bottom:2.5rem;position:relative;" class="animate-up">
+          <span style="font-size:0.85rem;color:var(--gold);font-weight:700;">2005</span>
+          <h4 style="font-family:var(--font-heading);color:var(--green-dark);margin:4px 0;">Secondary Section Added</h4>
+          <p style="color:var(--text-muted);font-size:0.92rem;">Classes 9 and 10 introduced. First batch of Matric students graduated with distinction.</p>
+        </div>
+        <div style="margin-bottom:2.5rem;position:relative;" class="animate-up">
+          <span style="font-size:0.85rem;color:var(--gold);font-weight:700;">2012</span>
+          <h4 style="font-family:var(--font-heading);color:var(--green-dark);margin:4px 0;">New Building Inaugurated</h4>
+          <p style="color:var(--text-muted);font-size:0.92rem;">Modern three-storey campus with science labs, computer lab, and library opened.</p>
+        </div>
+        <div style="position:relative;" class="animate-up">
+          <span style="font-size:0.85rem;color:var(--gold);font-weight:700;">2025</span>
+          <h4 style="font-family:var(--font-heading);color:var(--green-dark);margin:4px 0;">Today</h4>
+          <p style="color:var(--text-muted);font-size:0.92rem;">Over 850 students, 42 staff members, and a proud legacy of academic excellence.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEACHERS FULL SECTION -->
+  <section class="teachers-section section bg-light" id="teachersFullSection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Our Faculty</span>
+        <h2>Meet the <em>Teachers</em></h2>
+      </div>
+      <div class="teacher-carousel-container">
+        <div class="teacher-skeleton" id="teacherSkeleton">
+          <div class="skeleton-card">
+            <div class="skeleton-card-top"><div class="skeleton" style="height:100%;border-radius:0;"></div></div>
+            <div class="skeleton-card-body">
+              <div class="skeleton skeleton-line medium" style="margin-bottom:8px;"></div>
+              <div class="skeleton skeleton-line short"  style="margin-bottom:8px;"></div>
+              <div class="skeleton skeleton-line full"></div>
+            </div>
+          </div>
+        </div>
+        <div class="teacher-carousel" id="teacherCarousel" style="display:none;">
+          <button class="carousel-btn carousel-prev" id="tcPrev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+          <div class="carousel-track-wrapper">
+            <div class="carousel-track" id="allTeachersGrid"></div>
+          </div>
+          <button class="carousel-btn carousel-next" id="tcNext" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="carousel-dots" id="teacherDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBJECTS FULL SECTION -->
+  <section class="subjects-section section" id="subjectsFullSection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Curriculum</span>
+        <h2>Subjects We <em>Offer</em></h2>
+      </div>
+      <div class="subjects-skeleton" id="subjectsSkeleton" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:2rem;">
+        <div class="skeleton-card" style="padding:2rem;text-align:center;"><div class="skeleton" style="width:48px;height:48px;border-radius:50%;margin:0 auto 1rem;"></div><div class="skeleton skeleton-line medium" style="margin:0 auto;"></div></div>
+        <div class="skeleton-card" style="padding:2rem;text-align:center;"><div class="skeleton" style="width:48px;height:48px;border-radius:50%;margin:0 auto 1rem;"></div><div class="skeleton skeleton-line medium" style="margin:0 auto;"></div></div>
+        <div class="skeleton-card" style="padding:2rem;text-align:center;"><div class="skeleton" style="width:48px;height:48px;border-radius:50%;margin:0 auto 1rem;"></div><div class="skeleton skeleton-line medium" style="margin:0 auto;"></div></div>
+        <div class="skeleton-card" style="padding:2rem;text-align:center;"><div class="skeleton" style="width:48px;height:48px;border-radius:50%;margin:0 auto 1rem;"></div><div class="skeleton skeleton-line medium" style="margin:0 auto;"></div></div>
+      </div>
+      <div class="subjects-grid" id="allSubjectsGrid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:2rem;"></div>
+    </div>
+  </section>
+
+  <!-- SCIENCE GROUP -->
+  <section class="section bg-light">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Science Group</span>
+        <h2>Science <em>Subjects</em></h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem;">
+        <div class="notice-item animate-up">
+          <div class="notice-date" style="min-width:50px;text-align:center;font-size:1.5rem;">⚛️</div>
+          <div class="notice-text">
+            <h4>Physics</h4>
+            <p>Motion, forces, energy, electricity, waves and modern physics. Taught by Sir Sabir.</p>
+          </div>
+        </div>
+        <div class="notice-item animate-up">
+          <div class="notice-date" style="min-width:50px;text-align:center;font-size:1.5rem;">🧪</div>
+          <div class="notice-text">
+            <h4>Chemistry</h4>
+            <p>Atoms, reactions, organic chemistry. Lab practicals included. Taught by Ma'am Sana.</p>
+          </div>
+        </div>
+        <div class="notice-item animate-up">
+          <div class="notice-date" style="min-width:50px;text-align:center;font-size:1.5rem;">🧬</div>
+          <div class="notice-text">
+            <h4>Biology</h4>
+            <p>Life processes, genetics, ecology and human body systems. Taught by Ma'am Sana.</p>
+          </div>
+        </div>
+        <div class="notice-item animate-up">
+          <div class="notice-date" style="min-width:50px;text-align:center;font-size:1.5rem;">📐</div>
+          <div class="notice-text">
+            <h4>Mathematics</h4>
+            <p>Algebra, geometry, trigonometry, calculus. Taught by Ma'am Nadia.</p>
+          </div>
+        </div>
+        <div class="notice-item animate-up">
+          <div class="notice-date" style="min-width:50px;text-align:center;font-size:1.5rem;">💻</div>
+          <div class="notice-text">
+            <h4>Computer Science</h4>
+            <p>Programming, databases, networking and MS Office. Taught by Sir Sabir.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTICE BOARD -->
+  <section class="notice-section section" id="noticeSection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Updates</span>
+        <h2>Notice <em>Board</em></h2>
+      </div>
+      <div class="notices" id="noticeBoard"></div>
+    </div>
+  </section>
+
+  <!-- FAQ / COLLAPSE -->
+  <section class="faq-section section bg-light" id="faqSection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">FAQ</span>
+        <h2>Frequently Asked <em>Questions</em></h2>
+      </div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What are the school timings?</span>
+            <i class="fas fa-chevron-down faq-chevron"></i>
+          </button>
+          <div class="faq-answer">
+            <p>School timings are 8:00 AM to 2:00 PM, Monday through Saturday. The admission office is open until 3:00 PM.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is the admission process?</span>
+            <i class="fas fa-chevron-down faq-chevron"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Visit the school with your child's B-Form, passport-size photos, and previous report card. Fill the admission form, appear for a simple assessment, and you're done!</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Does the school offer transport?</span>
+            <i class="fas fa-chevron-down faq-chevron"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Yes, we provide door-to-door transport service for students living within a 5 km radius. Please contact the office for route details and fees.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What curriculum do you follow?</span>
+            <i class="fas fa-chevron-down faq-chevron"></i>
+          </button>
+          <div class="faq-answer">
+            <p>We follow the Punjab Curriculum & Textbook Board for classes 1–10, with an additional focus on Quran, Arabic, and Islamic studies.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Are there any extracurricular activities?</span>
+            <i class="fas fa-chevron-down faq-chevron"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Absolutely! We offer sports (cricket, football, badminton), art competitions, speech contests, and annual sports day. All students are encouraged to participate.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPLICATION TO PRINCIPAL -->
+  <section class="section" id="applicationSection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Apply to Principal</span>
+        <h2>Write an <em>Application</em></h2>
+      </div>
+      <div class="application-form" id="applicationForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="appName" placeholder="Your full name" required/>
+          </div>
+          <div class="form-group">
+            <label>Class *</label>
+            <select id="appClass" required>
+              <option value="">Select class...</option>
+              <option>Nursery</option><option>KG</option><option>Class 1</option><option>Class 2</option>
+              <option>Class 3</option><option>Class 4</option><option>Class 5</option><option>Class 6</option>
+              <option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10 (Matric)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Roll No.</label>
+            <input type="text" id="appRollNo" placeholder="Your roll number"/>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="appDate"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Subject / Application Type *</label>
+          <select id="appSubject" required>
+            <option value="">Select type...</option>
+            <option>Leave Application</option>
+            <option>Fee Concession</option>
+            <option>Transfer Certificate</option>
+            <option>Character Certificate</option>
+            <option>Change of Section</option>
+            <option>Change of Subject</option>
+            <option>Library Book Request</option>
+            <option>Complaint</option>
+            <option>General Request</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Application Body *</label>
+          <div class="toolbar">
+            <button onclick="format('bold', null, this)"><b>B</b></button>
+            <button onclick="format('italic', null, this)"><i>I</i></button>
+            <button onclick="format('underline', null, this)"><u>U</u></button>
+            <button onclick="format('insertUnorderedList', null, this)">• List</button>
+            <button onclick="format('insertOrderedList', null, this)">1. List</button>
+            <select onchange="format('fontSize', this.value, this)">
+              <option value="">Size</option>
+              <option value="1">10px</option>
+              <option value="3">16px</option>
+              <option value="5">24px</option>
+              <option value="7">36px</option>
+            </select>
+            <input type="color" onchange="format('foreColor', this.value, this)">
+          </div>
+          <div id="appRichContent" contenteditable="true" data-placeholder="Start typing here..."></div>
+          <input type="hidden" id="appRichContentHidden"/>
+        </div>
+        <div class="form-group">
+          <label>Additional Details</label>
+          <textarea id="appDetails" rows="3" placeholder="Any extra information you'd like to add..."></textarea>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-submit" id="submitAppBtn"><i class="fas fa-paper-plane"></i> &nbsp; Submit Application</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section class="section bg-light" id="contactSection">
+    <div class="container contact-grid" style="display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;">
+      <div class="animate-left">
+        <span class="section-label">Get In Touch</span>
+        <h2 style="font-family:var(--font-heading);font-size:2rem;color:var(--green-dark);margin:0.5rem 0 1.5rem;">We're Here <em>to Help</em></h2>
+        <div class="contact-info-item" style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:2rem;">
+          <div class="contact-icon" style="width:48px;height:48px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1.2rem;flex-shrink:0;"><i class="fas fa-map-marker-alt"></i></div>
+          <div>
+            <h4 style="color:var(--green-dark);font-weight:700;margin-bottom:3px;">Address</h4>
+            <p style="color:var(--text-muted);font-size:0.95rem;">Main Road, Lahore, Punjab, Pakistan</p>
+          </div>
+        </div>
+        <div class="contact-info-item" style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:2rem;">
+          <div class="contact-icon" style="width:48px;height:48px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1.2rem;flex-shrink:0;"><i class="fas fa-phone"></i></div>
+          <div>
+            <h4 style="color:var(--green-dark);font-weight:700;margin-bottom:3px;">Phone</h4>
+            <p style="color:var(--text-muted);font-size:0.95rem;">+92 300 1234567</p>
+            <p style="color:var(--text-muted);font-size:0.95rem;">+92 42 1234567 (Office)</p>
+          </div>
+        </div>
+        <div class="contact-info-item" style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:2rem;">
+          <div class="contact-icon" style="width:48px;height:48px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1.2rem;flex-shrink:0;"><i class="fas fa-envelope"></i></div>
+          <div>
+            <h4 style="color:var(--green-dark);font-weight:700;margin-bottom:3px;">Email</h4>
+            <p style="color:var(--text-muted);font-size:0.95rem;">info@westbridgeschool.edu</p>
+          </div>
+        </div>
+        <div class="contact-info-item" style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:2rem;">
+          <div class="contact-icon" style="width:48px;height:48px;border-radius:12px;background:var(--green-light);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:1.2rem;flex-shrink:0;"><i class="fas fa-clock"></i></div>
+          <div>
+            <h4 style="color:var(--green-dark);font-weight:700;margin-bottom:3px;">Office Hours</h4>
+            <p style="color:var(--text-muted);font-size:0.95rem;">Mon–Fri: 8:00 AM – 2:00 PM</p>
+            <p style="color:var(--text-muted);font-size:0.95rem;">Saturday: 8:00 AM – 12:00 PM</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form animate-right" style="background:var(--off-white);padding:2.5rem;border-radius:var(--radius-lg);">
+        <h3 style="font-family:var(--font-heading);color:var(--green-dark);margin-bottom:1.5rem;">Send a Message</h3>
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label for="contactName" style="display:block;font-weight:600;font-size:0.9rem;margin-bottom:0.5rem;color:var(--green-dark);">Full Name</label>
+          <input type="text" id="contactName" placeholder="Your full name" required style="width:100%;padding:0.85rem 1rem;border:2px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:0.95rem;background:var(--white);outline:none;color:var(--text);box-sizing:border-box;"/>
+        </div>
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label for="contactEmail" style="display:block;font-weight:600;font-size:0.9rem;margin-bottom:0.5rem;color:var(--green-dark);">Email Address</label>
+          <input type="email" id="contactEmail" placeholder="your@email.com" required style="width:100%;padding:0.85rem 1rem;border:2px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:0.95rem;background:var(--white);outline:none;color:var(--text);box-sizing:border-box;"/>
+        </div>
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label for="contactSubject" style="display:block;font-weight:600;font-size:0.9rem;margin-bottom:0.5rem;color:var(--green-dark);">Subject</label>
+          <select id="contactSubject" style="width:100%;padding:0.85rem 1rem;border:2px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:0.95rem;background:var(--white);outline:none;color:var(--text);box-sizing:border-box;">
+            <option value="">Select a topic...</option>
+            <option>Admission Inquiry</option>
+            <option>Fee Structure</option>
+            <option>Teacher Contact</option>
+            <option>General Question</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label style="display:block;font-weight:600;font-size:0.9rem;margin-bottom:0.5rem;color:var(--green-dark);">Message</label>
+          <div class="toolbar">
+            <button onclick="format('bold', null, this)"><b>B</b></button>
+            <button onclick="format('italic', null, this)"><i>I</i></button>
+            <button onclick="format('underline', null, this)"><u>U</u></button>
+            <button onclick="format('insertUnorderedList', null, this)">• List</button>
+            <button onclick="format('insertOrderedList', null, this)">1. List</button>
+            <select onchange="format('fontSize', this.value, this)">
+              <option value="">Size</option>
+              <option value="1">10px</option>
+              <option value="3">16px</option>
+              <option value="5">24px</option>
+              <option value="7">36px</option>
+            </select>
+            <input type="color" onchange="format('foreColor', this.value, this)">
+          </div>
+          <div id="pageRichContent" contenteditable="true" data-placeholder="Start typing here..."></div>
+        </div>
+        <button class="btn btn-primary" id="contactSendBtn" style="width:100%;justify-content:center;"><i class="fas fa-paper-plane"></i> &nbsp; Send Message</button>
+        <div class="form-success" id="contactFormSuccess" style="display:none;background:var(--green-light);border:2px solid var(--green);border-radius:var(--radius);padding:1rem 1.5rem;text-align:center;color:var(--green-dark);font-weight:600;margin-top:1rem;">
+          ✅ Message sent successfully! We will get back to you soon.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOCATION MAP SECTION -->
+  <section class="section" id="contactMapSection" style="padding-top:0;">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:2rem;">
+        <span class="section-label">Find Us</span>
+        <h2>Our <em>Location</em></h2>
+      </div>
+      <div class="geo-map-container animate-up">
+        <div class="geo-map-toolbar">
+          <div class="geo-map-title">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Westbridge School — Lahore, Pakistan</span>
+          </div>
+          <div class="geo-map-actions">
+            <button class="geo-btn geo-btn-primary" id="homeDirectionsBtn">
+              <i class="fas fa-directions"></i> Get Directions
+            </button>
+          </div>
+        </div>
+        <div class="geo-map-container" style="border:none;box-shadow:none;border-radius:0;">
+          <div class="geo-map small" id="homeGeoMap"></div>
+        </div>
+        <div class="geo-legend">
+          <div class="geo-legend-item">
+            <div class="geo-legend-dot school"></div>
+            <span>School Location</span>
+          </div>
+          <div class="geo-legend-item">
+            <div class="geo-legend-dot landmark"></div>
+            <span>Nearby Places</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHARTS & ANALYTICS SECTION -->
+  <section class="charts-section section" id="chartsSection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Analytics</span>
+        <h2>School <em>Dashboard</em></h2>
+      </div>
+
+      <!-- Quick Stats Row -->
+      <div class="chart-stats-row animate-up">
+        <div class="chart-stat-card">
+          <div class="chart-stat-icon green"><i class="fas fa-user-graduate"></i></div>
+          <div class="chart-stat-value">850</div>
+          <div class="chart-stat-label">Total Students</div>
+          <div class="chart-stat-change up"><i class="fas fa-arrow-up"></i> 9% from last year</div>
+        </div>
+        <div class="chart-stat-card">
+          <div class="chart-stat-icon gold"><i class="fas fa-chalkboard-teacher"></i></div>
+          <div class="chart-stat-value">42</div>
+          <div class="chart-stat-label">Teachers</div>
+          <div class="chart-stat-change up"><i class="fas fa-arrow-up"></i> 5 new this year</div>
+        </div>
+        <div class="chart-stat-card">
+          <div class="chart-stat-icon blue"><i class="fas fa-book"></i></div>
+          <div class="chart-stat-value">88%</div>
+          <div class="chart-stat-label">Pass Rate</div>
+          <div class="chart-stat-change up"><i class="fas fa-arrow-up"></i> 3% improvement</div>
+        </div>
+        <div class="chart-stat-card">
+          <div class="chart-stat-icon emerald"><i class="fas fa-trophy"></i></div>
+          <div class="chart-stat-value">76%</div>
+          <div class="chart-stat-label">Average Score</div>
+          <div class="chart-stat-change up"><i class="fas fa-arrow-up"></i> 2% higher</div>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="charts-grid">
+        <!-- Enrollment Trend -->
+        <div class="chart-card animate-up">
+          <div class="chart-card-header">
+            <div>
+              <h3 class="chart-card-title">Student Enrollment Trend</h3>
+              <p class="chart-card-subtitle">Year-over-year student growth</p>
+            </div>
+            <span class="chart-card-badge badge-up"><i class="fas fa-arrow-up"></i> Growing</span>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-canvas-wrapper"><canvas id="enrollmentChart"></canvas></div>
+          </div>
+          <div class="chart-card-footer">
+            <span><i class="fas fa-info-circle"></i> 7-year trend data</span>
+            <span>2019 – 2025</span>
+          </div>
+        </div>
+
+        <!-- Subject Distribution -->
+        <div class="chart-card animate-up">
+          <div class="chart-card-header">
+            <div>
+              <h3 class="chart-card-title">Subject Distribution</h3>
+              <p class="chart-card-subtitle">Students per subject category</p>
+            </div>
+            <span class="chart-card-badge"><i class="fas fa-pie-chart"></i> Breakdown</span>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-canvas-wrapper"><canvas id="subjectDistChart"></canvas></div>
+          </div>
+          <div class="chart-card-footer">
+            <span><i class="fas fa-info-circle"></i> Based on 12 subjects</span>
+            <span>Current semester</span>
+          </div>
+        </div>
+
+        <!-- Teacher Experience -->
+        <div class="chart-card animate-up">
+          <div class="chart-card-header">
+            <div>
+              <h3 class="chart-card-title">Teacher Experience</h3>
+              <p class="chart-card-subtitle">Years of teaching experience per faculty member</p>
+            </div>
+            <span class="chart-card-badge badge-stable"><i class="fas fa-star"></i> Expert Faculty</span>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-canvas-wrapper tall"><canvas id="teacherExpChart"></canvas></div>
+          </div>
+          <div class="chart-card-footer">
+            <span><i class="fas fa-info-circle"></i> Average: 13 years</span>
+            <span>8 faculty members</span>
+          </div>
+        </div>
+
+        <!-- Class-wise Strength -->
+        <div class="chart-card animate-up">
+          <div class="chart-card-header">
+            <div>
+              <h3 class="chart-card-title">Class-wise Strength</h3>
+              <p class="chart-card-subtitle">Number of students per class</p>
+            </div>
+            <span class="chart-card-badge"><i class="fas fa-users"></i> 850 Total</span>
+          </div>
+          <div class="chart-card-body">
+            <div class="chart-canvas-wrapper tall"><canvas id="classStrengthChart"></canvas></div>
+          </div>
+          <div class="chart-card-footer">
+            <span><i class="fas fa-info-circle"></i> Nursery to Matric</span>
+            <span>12 classes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full-width: Gender Distribution -->
+      <div class="charts-grid-single" style="margin-top:2rem;">
+        <div class="chart-card animate-up">
+          <div class="chart-card-header">
+            <div>
+              <h3 class="chart-card-title">Gender Distribution</h3>
+              <p class="chart-card-subtitle">Male vs Female student enrollment</p>
+            </div>
+            <span class="chart-card-badge"><i class="fas fa-venus-mars"></i> Overview</span>
+          </div>
+          <div class="chart-card-body" style="max-width:400px;margin:0 auto;">
+            <div class="chart-canvas-wrapper short"><canvas id="genderDistChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS SECTION -->
+  <section class="section bg-light" id="resultsSection">
+    <div class="container" style="text-align:center;max-width:560px;">
+      <div style="font-size:5rem;margin-bottom:1rem;">🏆</div>
+      <div class="section-header">
+        <span class="section-label">Results</span>
+        <h2>Exam <em>Results</em></h2>
+      </div>
+      <p style="color:var(--text-muted);font-size:1.05rem;line-height:1.8;margin-bottom:2rem;">
+        We're currently compiling the exam results.<br/>
+        They will be published here soon. Stay tuned!
+      </p>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h3>Westbridge Junior &amp; Upper School</h3>
+        <p>Building bright futures through quality education and strong values.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#home" data-tooltip="Go to Homepage">Home</a></li>
+          <li><a href="#aboutSection" data-tooltip="About Our School">About</a></li>
+          <li><a href="#teachersFullSection" data-tooltip="Our Faculty">Teachers</a></li>
+          <li><a href="#subjectsFullSection" data-tooltip="Subjects Offered">Subjects</a></li>
+          <li><a href="#contactSection" data-tooltip="Get in Touch">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4>Contact</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Main Road, Lahore, Pakistan</p>
+        <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+        <p><i class="fas fa-envelope"></i> info@westbridgeschool.edu</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Westbridge Junior &amp; Upper School. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+</div><!-- /main-content -->
+
+<!-- DARK MODE TOGGLE -->
+<button class="dark-toggle" id="darkToggle" data-tooltip="Toggle Dark / Light Mode" data-tooltip-pos="left">
+  <i class="fas fa-moon"></i>
+</button>
+
+
+<!-- FLOATING ACTION BUTTON -->
+<button class="fab" id="fabBtn" data-tooltip="Apply for Admission" data-tooltip-pos="left">
+  <span class="fab-icon">+</span>
+</button>
+
+<!-- ADMISSION MODAL (stepper) -->
+<div class="modal-overlay" id="admissionModal" tabindex="0">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-graduate" style="color:var(--green);margin-right:8px;"></i>Admission Form</h3>
+      <span class="auto-save-indicator" data-form="admission">💾 Saved</span>
+      <button class="modal-close" id="closeAdmModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="stepper">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Student</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Parent</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item" data-step="3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Review</span>
+        </div>
+      </div>
+      <div class="step-panel active" data-step="1">
+        <h4>Student Information</h4>
+        <p class="step-desc">Tell us about the student</p>
+        <div class="modal-field"><label>Full Name *</label><input type="text" id="admName" required placeholder="Enter student name"/></div>
+        <div class="modal-field"><label>Date of Birth</label><input type="date" id="admDob"/></div>
+        <div class="modal-field">
+          <label>Gender</label>
+          <input type="hidden" id="admGender"/>
+          <div style="display:flex;gap:1.5rem;margin-top:0.5rem;">
+            <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+              <input type="radio" name="admGenderRadio" value="Male"/> Male
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+              <input type="radio" name="admGenderRadio" value="Female"/> Female
+            </label>
+          </div>
+        </div>
+        <div class="modal-field">
+          <label>Class Applying For *</label>
+          <select id="admClass" required>
+            <option value="">Select class...</option>
+            <option>Nursery</option><option>KG</option><option>Class 1</option><option>Class 2</option>
+            <option>Class 3</option><option>Class 4</option><option>Class 5</option><option>Class 6</option>
+            <option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10 (Matric)</option>
+          </select>
+        </div>
+      </div>
+      <div class="step-panel" data-step="2">
+        <h4>Parent / Guardian Details</h4>
+        <p class="step-desc">Parent or guardian contact information</p>
+        <div class="modal-field"><label>Parent/Guardian Name *</label><input type="text" id="admParent" required placeholder="Father or Mother name"/></div>
+        <div class="modal-field"><label>Phone Number *</label>
+          <input type="tel" id="admPhone" required placeholder="+92 300 0000000"/>
+        </div>
+        <div class="modal-field"><label>Email</label><input type="email" id="admEmail" placeholder="parent@email.com"/></div>
+        <div class="modal-field"><label>Address</label><textarea id="admAddress" placeholder="Home address..." style="min-height:70px;resize:vertical;"></textarea></div>
+        <div class="modal-field">
+          <label>Upload Documents</label>
+          <div class="upload-zone" id="admUploadZone">
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <p>Drag &amp; drop files here or click to browse</p>
+            <small style="color:var(--text-muted);">Accepted: PDF, JPG, PNG (max 5MB each)</small>
+            <input type="file" id="admFileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none" multiple/>
+            <div class="file-list" id="admFileList"></div>
+          </div>
+        </div>
+        <div class="modal-field">
+          <div class="captcha-wrapper" id="admCaptcha">
+            <div class="captcha-header">
+              <span class="captcha-challenge"></span>
+              <button type="button" class="captcha-refresh"><i class="fas fa-sync-alt"></i></button>
+            </div>
+            <input type="text" class="captcha-input" placeholder="Enter result" autocomplete="off"/>
+            <div class="captcha-feedback"></div>
+          </div>
+        </div>
+      </div>
+      <div class="step-panel" data-step="3">
+        <h4>Review &amp; Submit</h4>
+        <p class="step-desc">Please review your information before submitting</p>
+        <div id="admReview" style="background:var(--off-white);border-radius:var(--radius);padding:1rem;font-size:0.9rem;line-height:1.8;color:var(--text);">
+          <div><strong>Student:</strong> <span id="rStudent">—</span></div>
+          <div><strong>DOB:</strong> <span id="rDob">—</span></div>
+          <div><strong>Gender:</strong> <span id="rGender">—</span></div>
+          <div><strong>Class:</strong> <span id="rClass">—</span></div>
+          <div><strong>Parent:</strong> <span id="rParent">—</span></div>
+          <div><strong>Phone:</strong> <span id="rPhone">—</span></div>
+          <div><strong>Email:</strong> <span id="rEmail">—</span></div>
+          <div><strong>Address:</strong> <span id="rAddress">—</span></div>
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:0.75rem;">
+          <i class="fas fa-info-circle" style="color:var(--green);"></i> Our admissions team will review and contact you within 24 hours.
+        </p>
+      </div>
+      <div class="step-buttons" id="stepButtons" data-step="1">
+        <button class="btn btn-outline-green" id="admPrevBtn" style="display:none;" data-tooltip="Previous Step"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn btn-primary" id="admNextBtn" data-tooltip="Next Step">Next <i class="fas fa-arrow-right"></i></button>
+          <button class="btn btn-primary" id="submitAdmModal" style="display:none;" data-tooltip="Submit Application"><i class="fas fa-paper-plane"></i> Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactModal" tabindex="0">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-headset" style="color:var(--green);margin-right:8px;"></i>Quick Contact</h3>
+      <span class="auto-save-indicator" data-form="contact">💾 Saved</span>
+      <button class="modal-close" id="closeContactModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="modal-body">Send us a quick message and we'll get back to you soon.</div>
+    <div class="modal-field"><label>Your Name</label><input type="text" id="cName" placeholder="Your full name"/></div>
+    <div class="modal-field"><label>Your Email</label><input type="email" id="cEmail" placeholder="your@email.com"/></div>
+    <div class="modal-field"><label>Phone</label>
+      <input type="tel" id="cPhone" placeholder="+92 300 0000000"/>
+    </div>
+    <div class="modal-field"><label>Message</label>
+      <div class="toolbar">
+        <button onclick="format('bold', null, this)"><b>B</b></button>
+        <button onclick="format('italic', null, this)"><i>I</i></button>
+        <button onclick="format('underline', null, this)"><u>U</u></button>
+        <button onclick="format('insertUnorderedList', null, this)">• List</button>
+        <button onclick="format('insertOrderedList', null, this)">1. List</button>
+        <select onchange="format('fontSize', this.value, this)">
+          <option value="">Size</option>
+          <option value="1">10px</option>
+          <option value="3">16px</option>
+          <option value="5">24px</option>
+          <option value="7">36px</option>
+        </select>
+        <input type="color" onchange="format('foreColor', this.value, this)">
+      </div>
+      <div id="cRichContent" contenteditable="true" data-placeholder="Start typing here..."></div>
+    </div>
+    <div class="modal-field">
+      <label>Attachments</label>
+      <div class="upload-zone" id="cUploadZone">
+        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+        <p>Drag &amp; drop files here or click to browse</p>
+        <input type="file" id="cFileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display:none" multiple/>
+        <div class="file-list" id="cFileList"></div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <div class="captcha-wrapper" id="cCaptcha">
+        <div class="captcha-header">
+          <span class="captcha-challenge"></span>
+          <button type="button" class="captcha-refresh"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <input type="text" class="captcha-input" placeholder="Enter result" autocomplete="off"/>
+        <div class="captcha-feedback"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline-green" id="cancelContactModal" data-tooltip="Go Back">Cancel</button>
+      <button class="btn btn-primary" id="submitContactModal" data-tooltip="Send Your Message"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN / REGISTER MODAL -->
+<div class="modal-overlay auth-modal" id="authModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-circle" style="color:var(--green);margin-right:8px;"></i><span id="authModalTitle">Account</span></h3>
+      <button class="modal-close" id="closeAuthModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-panel="login">Login</button>
+      <button class="auth-tab" data-panel="register">Register</button>
+    </div>
+    <div class="auth-panel active" id="loginPanel">
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <div class="password-wrapper">
+          <div style="position:relative;">
+            <input type="password" id="loginPassword" placeholder="Enter password" data-strength/>
+            <button type="button" class="password-toggle" data-target="loginPassword"><i class="fas fa-eye"></i></button>
+          </div>
+          <div class="password-strength" style="margin-top:8px;">
+            <div class="password-strength-bar"></div>
+            <div class="password-strength-bar"></div>
+            <div class="password-strength-bar"></div>
+          </div>
+          <span class="password-strength-text" style="display:block;margin-top:4px;"></span>
+        </div>
+      </div>
+      <div class="auth-error" id="loginError">Invalid email or password</div>
+      <div class="captcha-wrapper" id="loginCaptcha" style="margin:0.75rem 0;">
+        <div class="captcha-header" style="display:flex;align-items:center;gap:10px;">
+          <span class="captcha-challenge"></span>
+          <button type="button" class="captcha-refresh"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <input type="text" class="captcha-input" placeholder="Enter result" autocomplete="off" style="width:100%;margin-top:6px;padding:0.6rem 0.8rem;border:2px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;background:var(--off-white);color:var(--text);outline:none;box-sizing:border-box;"/>
+        <div class="captcha-feedback" style="font-size:0.8rem;margin-top:4px;"></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem;" id="loginBtn"><i class="fas fa-sign-in-alt"></i> &nbsp; Login</button>
+    </div>
+    <div class="auth-panel" id="registerPanel">
+      <div class="stepper" id="regStepper">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Profile</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Verify</span>
+        </div>
+      </div>
+      <div class="step-panel active" data-step="1">
+        <h4>Profile Information</h4>
+        <p class="step-desc">Set up your profile</p>
+        <div class="auth-field">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="Your full name"/>
+          <span class="field-error" id="regNameError"></span>
+        </div>
+        <div class="auth-field">
+          <label>Profile Avatar</label>
+          <div style="display:flex;align-items:center;gap:1rem;margin-top:0.5rem;">
+            <div class="avatar-circle" id="regAvatarPreview" style="width:60px;height:60px;font-size:1.4rem;flex-shrink:0;">
+              <span id="regAvatarInitial">U</span>
+            </div>
+            <div style="flex:1;">
+              <div class="file-drop-zone" id="regAvatarDropZone" style="padding:1rem;">
+                <i class="fas fa-cloud-upload-alt file-drop-zone-icon" style="font-size:1.8rem;"></i>
+                <p class="file-drop-zone-text">Drag &amp; drop photo here or click to browse</p>
+                <small class="file-drop-zone-hint">JPG, PNG, GIF accepted</small>
+                <input type="file" id="regAvatarInput" accept="image/*" style="display:none"/>
+              </div>
+              <button class="btn btn-outline-green" id="regAvatarClear" style="display:none;margin-top:6px;font-size:0.78rem;padding:4px 12px;width:100%;justify-content:center;">
+                <i class="fas fa-undo"></i> &nbsp; Remove Photo
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" placeholder="your@email.com"/>
+          <span class="field-error" id="regEmailError"></span>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <div style="position:relative;">
+              <input type="password" id="regPassword" placeholder="Min 6 characters" data-strength/>
+              <button type="button" class="password-toggle" data-target="regPassword"><i class="fas fa-eye"></i></button>
+            </div>
+            <div class="password-strength" style="margin-top:8px;">
+              <div class="password-strength-bar"></div>
+              <div class="password-strength-bar"></div>
+              <div class="password-strength-bar"></div>
+            </div>
+            <span class="password-strength-text" style="display:block;margin-top:4px;"></span>
+          </div>
+          <span class="field-error" id="regPasswordError"></span>
+        </div>
+      </div>
+      <div class="step-panel" data-step="2">
+        <h4>Email Verification</h4>
+        <p class="step-desc">Enter the 6-digit code sent to your email</p>
+        <div class="auth-field">
+          <div class="otp-wrapper" id="regOtpWrapper">
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off"/>
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off"/>
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off"/>
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off"/>
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off"/>
+            <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off"/>
+          </div>
+          <input type="hidden" id="regOtpValue" value=""/>
+          <div style="text-align:center;margin-top:1rem;">
+            <button type="button" class="btn btn-outline-green" id="regResendOtp" style="font-size:0.82rem;padding:6px 16px;">
+              <i class="fas fa-redo"></i> &nbsp; Resend Code
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="auth-error" id="registerError">Please fill all fields</div>
+      <div class="step-buttons" id="regStepButtons" data-step="1">
+        <button class="btn btn-outline-green" id="regPrevBtn" style="display:none;"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:0.75rem;margin-left:auto;">
+          <button class="btn btn-primary" id="regNextBtn">Next <i class="fas fa-arrow-right"></i></button>
+          <button class="btn btn-primary" id="registerBtn" style="display:none;"><i class="fas fa-check-circle"></i> &nbsp; Verify & Complete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE AVATAR MODAL -->
+<div class="modal-overlay" id="avatarModal" tabindex="0">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-camera" style="color:var(--green);margin-right:8px;"></i>Change Avatar</h3>
+      <button class="modal-close" id="closeAvatarModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div class="avatar-upload" style="justify-content:center;margin-bottom:1.5rem;">
+        <div class="avatar-circle" id="changeAvatarPreview" style="width:80px;height:80px;font-size:2rem;">
+          <span id="changeAvatarInitial">U</span>
+        </div>
+      </div>
+      <label class="btn btn-primary" for="changeAvatarInput" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;">
+        <i class="fas fa-upload"></i> &nbsp; Upload New Photo
+      </label>
+      <input type="file" id="changeAvatarInput" accept="image/*" style="display:none;"/>
+      <button class="btn btn-outline-green" id="resetAvatarBtn" style="margin-top:1rem;width:100%;justify-content:center;">
+        <i class="fas fa-undo"></i> &nbsp; Reset to Initial
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+<div class="modal-overlay" id="logoutConfirmModal" tabindex="0">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-sign-out-alt" style="color:var(--green);margin-right:8px;"></i>Confirm Logout</h3>
+      <button class="modal-close" id="closeLogoutModal" data-tooltip="Close" data-tooltip-pos="bottom">&#10005;</button>
+    </div>
+    <div class="modal-body" style="text-align:center;padding:1.5rem 0;">
+      <i class="fas fa-question-circle" style="font-size:3rem;color:var(--gold);margin-bottom:1rem;"></i>
+      <p style="font-size:1.1rem;color:var(--text);font-weight:600;">Hey, you sure you want to log out?</p>
+    </div>
+    <div class="modal-footer" style="justify-content:center;gap:1rem;">
+      <button class="btn btn-outline-green" id="cancelLogoutBtn" data-tooltip="Stay logged in">Cancel</button>
+      <button class="btn btn-danger" id="confirmLogoutBtn" data-tooltip="Log out now"><i class="fas fa-sign-out-alt"></i> &nbsp; Yes, Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/features.js"></script>
+<script src="js/new-features.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/geolocation.js"></script>
+
+<!-- Back to Top Button -->
+<a href="#" id="backToTopBtn" title="Back to Top" aria-label="Back to Top">&#8679;</a>
+
+<script>
+(function() {
+  var btn = document.getElementById('backToTopBtn');
+  if (!btn) return;
+  window.addEventListener('scroll', function() {
+    btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+  });
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+/* ───── TEACHER CAROUSEL ───── */
+(function() {
+  var track = document.getElementById('allTeachersGrid');
+  var prevBtn = document.getElementById('tcPrev');
+  var nextBtn = document.getElementById('tcNext');
+  var dotsContainer = document.getElementById('teacherDots');
+  if (!track) return;
+
+  var current = 0;
+  var autoSlide;
+  var items = track.querySelectorAll('.teacher-card');
+
+  function rebuild() {
+    items = track.querySelectorAll('.teacher-card');
+    if (!items.length) return;
+    dotsContainer.innerHTML = '';
+    for (var i = 0; i < items.length; i++) {
+      var dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === current ? ' active' : '');
+      dot.setAttribute('data-index', i);
+      dot.addEventListener('click', function() { goTo(parseInt(this.getAttribute('data-index'))); });
+      dotsContainer.appendChild(dot);
+    }
+    update();
+  }
+
+  function update() {
+    if (!items.length) return;
+    if (current >= items.length) current = 0;
+    if (current < 0) current = items.length - 1;
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    var dots = dotsContainer.querySelectorAll('.carousel-dot');
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === current); });
+  }
+
+  function goTo(index) {
+    current = index;
+    update();
+    resetAuto();
+  }
+
+  function next() { goTo((current + 1) % items.length); }
+  function prev() { goTo((current - 1 + items.length) % items.length); }
+
+  function resetAuto() {
+    clearInterval(autoSlide);
+    autoSlide = setInterval(next, 2000);
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', prev);
+  if (nextBtn) nextBtn.addEventListener('click', next);
+
+  function showCarousel() {
+    var skel = document.getElementById('teacherSkeleton');
+    var carousel = document.getElementById('teacherCarousel');
+    if (skel) skel.style.display = 'none';
+    if (carousel) carousel.style.display = '';
+  }
+
+  var observer = new MutationObserver(function() {
+    if (track.children.length) {
+      showCarousel();
+      rebuild();
+      resetAuto();
+    }
+  });
+  observer.observe(track, { childList: true });
+
+  setTimeout(function() {
+    if (track.children.length) {
+      showCarousel();
+      rebuild();
+      resetAuto();
+    }
+  }, 500);
+
+  var container = document.getElementById('teacherCarousel');
+  if (container) {
+    container.addEventListener('mouseenter', function() { clearInterval(autoSlide); });
+    container.addEventListener('mouseleave', resetAuto);
+  }
+})();
+
+/* ───── SUBJECTS SKELETON ───── */
+(function() {
+  var grid = document.getElementById('allSubjectsGrid');
+  var skel = document.getElementById('subjectsSkeleton');
+  if (!grid || !skel) return;
+  var obs = new MutationObserver(function() {
+    if (grid.children.length) {
+      skel.style.display = 'none';
+      grid.style.display = '';
+      obs.disconnect();
+    }
+  });
+  obs.observe(grid, { childList: true });
+  setTimeout(function() {
+    if (grid.children.length) {
+      skel.style.display = 'none';
+      grid.style.display = '';
+    }
+  }, 600);
+})();
+
+/* ───── APPLICATION FORM SUBMISSION ───── */
+(function() {
+  function getVal(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+  var submitBtn = document.getElementById('submitAppBtn');
+  if (!submitBtn) return;
+  submitBtn.addEventListener('click', function() {
+    var name = getVal('appName');
+    var cls = getVal('appClass');
+    var subject = getVal('appSubject');
+    var rich = document.getElementById('appRichContent');
+    var body = rich ? rich.innerHTML.trim() : '';
+    if (!name || !cls || !subject || !body || body === '<br>') {
+      var toast = document.getElementById('toastContainer');
+      if (!toast) return;
+      var t = document.createElement('div');
+      t.className = 'toast warning';
+      t.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Please fill all required fields</span>';
+      toast.appendChild(t);
+      setTimeout(function() { t.remove(); }, 3000);
+      return;
+    }
+    var date = getVal('appDate') || new Date().toLocaleDateString();
+    var rollNo = getVal('appRollNo') || '—';
+    var details = getVal('appDetails') || '—';
+    var plainBody = rich ? rich.textContent.trim() : '';
+    var appData = {
+      name: name, class: cls, rollNo: rollNo, date: date,
+      subject: subject, body: body, plainBody: plainBody, details: details,
+      submittedAt: new Date().toISOString()
+    };
+    var saved = [];
+    try { saved = JSON.parse(localStorage.getItem('wb-applications')) || []; } catch(e) {}
+    saved.push(appData);
+    localStorage.setItem('wb-applications', JSON.stringify(saved));
+    if (rich) rich.innerHTML = '';
+    document.getElementById('appName').value = '';
+    document.getElementById('appClass').value = '';
+    document.getElementById('appRollNo').value = '';
+    document.getElementById('appDate').value = '';
+    document.getElementById('appSubject').value = '';
+    document.getElementById('appDetails').value = '';
+    var toast = document.getElementById('toastContainer');
+    if (!toast) return;
+    var t = document.createElement('div');
+    t.className = 'toast success';
+    t.innerHTML = '<i class="fas fa-check-circle"></i><span>Application submitted successfully!</span>';
+    toast.appendChild(t);
+    setTimeout(function() { t.remove(); }, 4000);
+  });
+})();
+
+/* ───── CONTACT FORM SUBMISSION ───── */
+(function() {
+  var sendBtn = document.getElementById('contactSendBtn');
+  if (!sendBtn) return;
+  sendBtn.addEventListener('click', function() {
+    var name = document.getElementById('contactName');
+    var email = document.getElementById('contactEmail');
+    var msg = document.getElementById('pageRichContent');
+    var subj = document.getElementById('contactSubject');
+    if (!name || !name.value.trim()) { showToast('Please enter your name', 'warning'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { showToast('Please enter a valid email', 'warning'); return; }
+    if (!msg || !msg.textContent.trim()) { showToast('Please write a message', 'warning'); return; }
+
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name.value.trim(),
+        email: email.value.trim(),
+        subject: subj ? subj.value.trim() : '',
+        message: msg.innerHTML.trim()
+      })
+    })
+    .then(function(response) {
+      return response.json().then(function(data) {
+        return { status: response.status, body: data };
+      });
+    })
+    .then(function(result) {
+      sendBtn.disabled = false;
+      sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> &nbsp; Send Message';
+
+      if (result.body.success) {
+        var success = document.getElementById('contactFormSuccess');
+        if (success) success.style.display = 'block';
+        name.value = ''; email.value = ''; msg.innerHTML = '';
+        if (subj) subj.value = '';
+      } else {
+        showToast(result.body.message || 'Something went wrong. Please try again.', 'warning');
+      }
+    })
+    .catch(function(err) {
+      console.error('Contact form submission failed:', err);
+      sendBtn.disabled = false;
+      sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> &nbsp; Send Message';
+      showToast('Could not reach the server. Please try again later.', 'warning');
+    });
+  });
+})();
+
+/* ───── RICH TEXT EDITOR FORMAT FUNCTION ───── */
+function format(cmd, value, el) {
+  var toolbar = el && el.closest('.toolbar');
+  var editor = toolbar && toolbar.nextElementSibling;
+  if (editor && editor.isContentEditable) editor.focus();
+  document.execCommand(cmd, false, value || null);
+}
+
+/* ───── REGISTER STEPPER ───── */
+(function() {
+  var container = document.getElementById('registerPanel');
+  if (!container) return;
+  var steps = container.querySelectorAll('.step-panel');
+  var items = container.querySelectorAll('.step-item');
+  var prevBtn = document.getElementById('regPrevBtn');
+  var nextBtn = document.getElementById('regNextBtn');
+  var subBtn = document.getElementById('registerBtn');
+  var buttons = document.getElementById('regStepButtons');
+  var current = 1;
+  function showStep(n) {
+    current = n;
+    steps.forEach(function(p) { p.classList.toggle('active', p.getAttribute('data-step') == n); });
+    items.forEach(function(i) { i.classList.toggle('active', i.getAttribute('data-step') == n); });
+    if (prevBtn) prevBtn.style.display = n === 1 ? 'none' : '';
+    if (nextBtn) nextBtn.style.display = n === steps.length ? 'none' : '';
+    if (subBtn) subBtn.style.display = n === steps.length ? '' : 'none';
+    if (buttons) buttons.setAttribute('data-step', n);
+  }
+  if (prevBtn) prevBtn.addEventListener('click', function() { if (current > 1) showStep(current - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function() {
+    if (current === 1) {
+      var valid = true;
+      container.querySelectorAll('.field-error').forEach(function(e){ e.textContent = ''; });
+      container.querySelectorAll('.field-invalid').forEach(function(e){ e.classList.remove('field-invalid'); });
+      var n = document.getElementById('regName');
+      if (!n || !n.value.trim()) { var ne = document.getElementById('regNameError'); if (ne) ne.textContent = 'Please fill this field'; if (n) n.classList.add('field-invalid'); valid = false; }
+      var em = document.getElementById('regEmail');
+      if (!em || !em.value.trim()) { var ee = document.getElementById('regEmailError'); if (ee) ee.textContent = 'Please fill this field'; if (em) em.classList.add('field-invalid'); valid = false; }
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())) { var ee = document.getElementById('regEmailError'); if (ee) ee.textContent = 'Invalid email format'; if (em) em.classList.add('field-invalid'); valid = false; }
+      var pw = document.getElementById('regPassword');
+      if (!pw || !pw.value.trim()) { var pe = document.getElementById('regPasswordError'); if (pe) pe.textContent = 'Please fill this field'; if (pw) pw.classList.add('field-invalid'); valid = false; }
+      else if (pw.value.length < 6) { var pe = document.getElementById('regPasswordError'); if (pe) pe.textContent = 'Minimum 6 characters'; if (pw) pw.classList.add('field-invalid'); valid = false; }
+      if (!valid) return;
+
+      var err = document.getElementById('registerError');
+      if (err) err.classList.remove('show');
+      nextBtn.disabled = true;
+      nextBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+      var regData = {
+        name: n.value.trim(),
+        email: em.value.trim(),
+        password: pw.value.trim()
+      };
+
+      fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(regData)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        nextBtn.disabled = false;
+        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+        if (data.success) {
+          window.regPendingEmail = data.email;
+          if (err) err.classList.remove('show');
+          showStep(2);
+          showToast('Code sent! Check your email. 📧', 'info', 4000);
+        } else {
+          if (err) { err.textContent = data.message || 'Registration failed'; err.classList.add('show'); }
+        }
+      })
+      .catch(function() {
+        nextBtn.disabled = false;
+        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+        if (err) { err.textContent = 'Network error. Please try again.'; err.classList.add('show'); }
+      });
+    } else {
+      if (current < steps.length) showStep(current + 1);
+    }
+  });
+  showStep(1);
+
+  /* OTP input auto-advance */
+  var otpInputs = document.querySelectorAll('#regOtpWrapper .otp-input');
+  var otpHidden = document.getElementById('regOtpValue');
+  function updateOtpHidden() {
+    var val = '';
+    otpInputs.forEach(function(inp) { val += inp.value; });
+    if (otpHidden) otpHidden.value = val;
+  }
+  otpInputs.forEach(function(inp, i) {
+    inp.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+      this.classList.toggle('filled', this.value.length > 0);
+      updateOtpHidden();
+      if (this.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
+    });
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !this.value && i > 0) {
+        otpInputs[i - 1].focus();
+        otpInputs[i - 1].value = '';
+        otpInputs[i - 1].classList.remove('filled');
+        updateOtpHidden();
+      }
+      if (e.key === 'ArrowLeft' && i > 0) otpInputs[i - 1].focus();
+      if (e.key === 'ArrowRight' && i < otpInputs.length - 1) otpInputs[i + 1].focus();
+    });
+    inp.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var paste = (e.clipboardData || window.clipboardData).getData('text');
+      var digits = paste.replace(/\D/g, '').split('');
+      otpInputs.forEach(function(oinp, j) {
+        if (j < digits.length) { oinp.value = digits[j]; oinp.classList.add('filled'); }
+      });
+      updateOtpHidden();
+      if (digits.length < otpInputs.length) otpInputs[digits.length].focus();
+      else otpInputs[otpInputs.length - 1].focus();
+    });
+    inp.addEventListener('focus', function() { this.select(); });
+  });
+
+  /* Resend OTP */
+  var resendBtn = document.getElementById('regResendOtp');
+  if (resendBtn) {
+    resendBtn.addEventListener('click', function() {
+      var email = window.regPendingEmail || null;
+      if (!email) { showToast('No email to resend to', 'warning'); return; }
+      resendBtn.disabled = true;
+      resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      fetch('/api/auth/resend-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        resendBtn.disabled = false;
+        resendBtn.innerHTML = '<i class="fas fa-redo"></i> &nbsp; Resend Code';
+        showToast(data.message || 'Code resent!', data.success ? 'success' : 'warning');
+      })
+      .catch(function() {
+        resendBtn.disabled = false;
+        resendBtn.innerHTML = '<i class="fas fa-redo"></i> &nbsp; Resend Code';
+        showToast('Network error', 'error');
+      });
+    });
+  }
+})();
+
+/* ───── SECURITY CODE DIGIT BOXES ───── */
+(function() {
+  var inputs = document.querySelectorAll('.code-digit');
+  var hidden = document.getElementById('regSecurityCode');
+  if (!inputs.length || !hidden) return;
+  function updateHidden() {
+    var val = '';
+    inputs.forEach(function(inp) { val += inp.value; });
+    hidden.value = val;
+  }
+  inputs.forEach(function(inp, i) {
+    inp.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+      updateHidden();
+      if (this.value && i < inputs.length - 1) inputs[i + 1].focus();
+    });
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !this.value && i > 0) {
+        inputs[i - 1].focus();
+        inputs[i - 1].value = '';
+        updateHidden();
+      }
+    });
+    inp.addEventListener('focus', function() { this.select(); });
+  });
+})();
+
+/* ───── ADMISSION SIDEBAR LINK → OPEN MODAL ───── */
+var ddAdmission = document.getElementById('dd-admission');
+if (ddAdmission) {
+  ddAdmission.addEventListener('click', function(e) {
+    e.preventDefault();
+    var modal = document.getElementById('admissionModal');
+    if (modal) modal.classList.add('active');
+  });
+}
+
+/* ───── AUTH MODAL CLOSE FIX ───── */
+document.getElementById('closeAuthModal')?.addEventListener('click', function() {
+  var m = document.getElementById('authModal');
+  if (m) { m.classList.remove('open'); m.classList.remove('active'); document.body.style.overflow = ''; }
+});
+
+/* ───── ACTIVE LINK HIGHLIGHT ───── */
+function updateActiveLink() {
+  var hash = window.location.hash || '#home';
+  document.querySelectorAll('.sidebar-link, .sidebar-sub-link').forEach(function(a) {
+    a.classList.remove('active');
+    var href = a.getAttribute('href');
+    if (!href) return;
+    var anchor = href.split('#')[1];
+    if (anchor && '#' + anchor === hash) {
+      a.classList.add('active');
+      var dropdown = a.closest('.sidebar-dropdown');
+      if (dropdown) {
+        dropdown.classList.add('open');
+        var toggle = dropdown.querySelector('.sidebar-dropdown-toggle');
+        if (toggle) toggle.classList.add('active');
+      }
+    }
+  });
+}
+
+/* ───── SMOOTH SCROLL FOR ANCHOR LINKS ───── */
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    var href = this.getAttribute('href');
+    if (href === '#' || !href) return;
+    try {
+      var target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        history.pushState(null, null, href);
+        updateActiveLink();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch(err) {}
+  });
+});
+
+/* ───── INIT & SCROLL TO HASH ON LOAD ───── */
+(function() {
+  updateActiveLink();
+  var hash = window.location.hash;
+  if (hash) {
+    setTimeout(function() {
+      try {
+        var target = document.querySelector(hash);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch(err) {}
+    }, 300);
+  }
+})();
+</script>
+</body>
+</html>

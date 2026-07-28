@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teachers | Westbridge Junior & Upper School</title>
+  <link rel="icon" href="../images/logo.jpg" type="image/jpeg"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="stylesheet" href="../css/animations.css"/>
+  <link rel="stylesheet" href="../css/features.css"/>
+  <link rel="stylesheet" href="../css/new-features.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+/* ===== BACK TO TOP BUTTON ===== */
+#backToTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1a6fd4;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 48px;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  transition: background 0.2s, transform 0.2s, opacity 0.3s;
+  opacity: 0.9;
+}
+#backToTopBtn:hover {
+  background: #1558b0;
+  transform: translateY(-3px);
+  opacity: 1;
+}
+body.dark-mode #backToTopBtn {
+  background: #4a9eff;
+  color: #111;
+}
+body.dark-mode #backToTopBtn:hover {
+  background: #2a7ee0;
+}
+
+/* TEACHER CAROUSEL */
+.teacher-carousel-container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+.teacher-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.carousel-track-wrapper {
+  overflow: hidden;
+  flex: 1;
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.carousel-track .teacher-card {
+  min-width: 100%;
+  box-sizing: border-box;
+  display: block;
+  text-decoration: none;
+}
+.carousel-btn {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--green);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+  z-index: 2;
+}
+.carousel-btn:hover {
+  background: var(--green-dark, #059669);
+  transform: scale(1.1);
+}
+body.dark-mode .carousel-btn {
+  background: var(--green-dark, #059669);
+}
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.carousel-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--green);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  padding: 0;
+}
+.carousel-dot.active {
+  background: var(--green);
+  transform: scale(1.2);
+}
+body.dark-mode .carousel-dot {
+  border-color: var(--green-dark, #059669);
+}
+body.dark-mode .carousel-dot.active {
+  background: var(--green-dark, #059669);
+}
+</style>
+</head>
+<body class="no-top-header">
+
+<!-- FULL-PAGE SKELETON LOADER -->
+<div class="page-skeleton" id="pageSkeleton">
+  <div class="sk-nav"><div class="sk-nav-inner"><div class="sk-logo"></div><div class="sk-nav-links"><div class="sk-line"></div><div class="sk-line"></div><div class="sk-line"></div></div></div></div>
+  <div class="sk-hero"><div class="sk-hero-content"><div class="sk-line" style="width:50%;height:2rem;margin:0 auto 1rem;"></div><div class="sk-line" style="width:70%;height:1.2rem;margin:0 auto;"></div></div></div>
+  <div class="sk-section"><div class="sk-two-col"><div class="sk-col"><div class="sk-line" style="width:40%;height:1.5rem;margin-bottom:1rem;"></div><div class="sk-line"></div><div class="sk-line" style="width:60%;"></div></div><div class="sk-col"><div class="sk-img"></div></div></div></div>
+  <div class="sk-section"><div class="sk-grid"><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div></div></div>
+</div>
+
+<!-- SKIP TO CONTENT LINK -->
+<a href="#mainContent" class="skip-link">Skip to main content</a>
+
+<!-- SCROLL PROGRESS INDICATOR -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== SIDEBAR OVERLAY ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <img src="../images/logo.jpg" alt="Logo" data-tooltip="Westbridge School" data-tooltip-pos="right"/>
+      <span class="sidebar-logo-text" data-tooltip="Westbridge School" data-tooltip-pos="right">Westbridge School</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">    <div class="sidebar-section-label" data-tooltip="Main Navigation" data-tooltip-pos="right">Main Menu</div>
+    <a href="../index.html"  class="sidebar-link" data-tooltip="Home" data-tooltip-pos="right">    <i class="fas fa-home"></i>              <span>Home</span></a>
+    <a href="about.html"     class="sidebar-link" data-tooltip="About School" data-tooltip-pos="right">   <i class="fas fa-school"></i>            <span>About School</span></a>
+    <div class="sidebar-dropdown">
+      <a href="#" class="sidebar-link sidebar-dropdown-toggle" id="sb-academics" data-tooltip="Academics" data-tooltip-pos="right">
+        <i class="fas fa-book-open"></i>            <span>Academics</span>
+        <i class="fas fa-chevron-down sidebar-chevron"></i>
+      </a>
+      <div class="sidebar-dropdown-menu">
+        <a href="teachers.html" class="sidebar-sub-link"><i class="fas fa-chalkboard-teacher"></i><span>Teachers</span></a>
+        <a href="subjects.html" class="sidebar-sub-link"><i class="fas fa-book-open"></i><span>Subjects</span></a>
+        <a href="../404.html" class="sidebar-sub-link" id="dd-timetable"><i class="fas fa-clock"></i><span>Timetable</span></a>
+      </div>
+    </div>
+    <a href="application.html" class="sidebar-link" data-tooltip="Write Application" data-tooltip-pos="right">
+      <i class="fas fa-pen-fancy"></i><span>Apply to Principal</span>
+    </a>
+    <a href="contact.html"   class="sidebar-link" data-tooltip="Contact" data-tooltip-pos="right"> <i class="fas fa-envelope"></i>          <span>Contact</span></a>
+    <a href="results.html" class="sidebar-link" data-tooltip="Results" data-tooltip-pos="right">
+      <i class="fas fa-trophy"></i><span>Results</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <i class="fas fa-graduation-cap" style="color:var(--gold);font-size:1.1rem;flex-shrink:0;" data-tooltip="Bridge to Success" data-tooltip-pos="right"></i>
+    <span>Bridge to Success</span>
+  </div>
+</aside>
+
+
+<div class="main-content" id="mainContent">
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <button class="hamburger" id="hamburger" aria-label="Toggle Sidebar" data-tooltip="Toggle Menu" data-tooltip-pos="bottom">
+          <span></span><span></span><span></span>
+        </button>
+        <img src="../images/logo.jpg" alt="Westbridge Logo" class="nav-logo" data-tooltip="Westbridge School" data-tooltip-pos="bottom"/>
+        <span class="nav-title">Westbridge Junior &amp; Upper School</span>
+      </div>
+      <div class="breadcrumb" style="flex:1;min-width:160px;text-align:center;"><a href="../index.html">Home</a> / <span style="color:var(--text-muted);">Academics</span> / <span>Teachers</span></div>
+      <div class="nav-right" style="display:flex;align-items:center;gap:0.75rem;">
+        <div class="search-wrapper"><input type="text" id="searchInput" placeholder="Search teachers, subjects..." autocomplete="off"><i class="fas fa-search search-icon"></i><div class="search-autocomplete" id="searchResults"></div></div>
+        <button class="theme-toggle" id="themeToggle" data-tooltip="Toggle Light/Dark Mode" data-tooltip-pos="bottom">🌙 Dark</button>
+        <div class="nav-avatar" id="navAvatar" data-tooltip="Login / Register" data-tooltip-pos="bottom">
+          <div class="avatar-circle guest" id="avatarCircle"><i class="fas fa-user"></i></div>
+          <span class="avatar-name" id="avatarName">Guest</span>
+          <div class="user-dropdown" id="userDropdown">
+            <button class="user-dropdown-item" id="ud-profile"><i class="fas fa-user-circle"></i> My Profile</button>
+            <button class="user-dropdown-item" id="ud-avatar"><i class="fas fa-camera"></i> Change Avatar</button>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" id="ud-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-hero" style="padding-bottom:2rem;">
+    <h1>Our Teachers</h1>
+    <p>Dedicated educators shaping the next generation</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Faculty</span>
+        <h2>Meet All <em>Our Teachers</em></h2>
+      </div>
+      <div class="teacher-carousel-container">
+        <div class="teacher-skeleton" id="teacherSkeleton">
+          <div class="skeleton-card">
+            <div class="skeleton-card-top"><div class="skeleton" style="height:100%;border-radius:0;"></div></div>
+            <div class="skeleton-card-body">
+              <div class="skeleton skeleton-line medium" style="margin-bottom:8px;"></div>
+              <div class="skeleton skeleton-line short"  style="margin-bottom:8px;"></div>
+              <div class="skeleton skeleton-line full"></div>
+            </div>
+          </div>
+        </div>
+        <div class="teacher-carousel" id="teacherCarousel" style="display:none;">
+          <button class="carousel-btn carousel-prev" id="tcPrev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+          <div class="carousel-track-wrapper">
+            <div class="carousel-track" id="allTeachersGrid"></div>
+          </div>
+          <button class="carousel-btn carousel-next" id="tcNext" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="carousel-dots" id="teacherDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h3>Westbridge Junior & Upper School</h3>
+        <p>Building bright futures through quality education and strong values.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="../index.html" data-tooltip="Go to Homepage">Home</a></li>
+          <li><a href="about.html" data-tooltip="About Our School">About</a></li>
+          <li><a href="teachers.html" data-tooltip="Meet Our Teachers">Teachers</a></li>
+          <li><a href="subjects.html" data-tooltip="View All Subjects">Subjects</a></li>
+          <li><a href="contact.html" data-tooltip="Get in Touch">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4>Contact</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Main Road, Lahore, Pakistan</p>
+        <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+        <p><i class="fas fa-envelope"></i> info@westbridgeschool.edu</p>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 Westbridge Junior & Upper School. All Rights Reserved.</p></div>
+  </footer>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/features.js"></script>
+  <script src="../js/new-features.js"></script>
+</div><!-- end main-content -->
+
+<!-- ===== DARK MODE TOGGLE ===== -->
+<button class="dark-toggle" id="darkToggle" data-tooltip="Toggle Dark / Light Mode" data-tooltip-pos="left">
+  <i class="fas fa-moon"></i>
+</button>
+
+<!-- ===== ADMISSION MODAL ===== -->
+<div class="modal-overlay" id="admissionModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-graduate" style="color:var(--green);margin-right:8px;"></i>Admission Form</h3>
+      <button class="modal-close" id="closeAdmModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="stepper">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Student</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Parent</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item" data-step="3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Review</span>
+        </div>
+      </div>
+      <div class="step-panel active" data-step="1">
+        <h4>Student Information</h4>
+        <p class="step-desc">Tell us about the student</p>
+        <div class="modal-field"><label>Full Name *</label><input type="text" id="admName" required placeholder="Enter student name"/></div>
+        <div class="modal-field"><label>Date of Birth</label><input type="date" id="admDob"/></div>
+        <div class="modal-field">
+          <label>Gender</label>
+          <input type="hidden" id="admGender"/>
+          <div style="display:flex;gap:1.5rem;margin-top:0.5rem;">
+            <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+              <input type="radio" name="admGenderRadio" value="Male"/> Male
+            </label>
+            <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+              <input type="radio" name="admGenderRadio" value="Female"/> Female
+            </label>
+          </div>
+        </div>
+        <div class="modal-field">
+          <label>Class Applying For *</label>
+          <select id="admClass" required>
+            <option value="">Select class...</option>
+            <option>Nursery</option><option>KG</option><option>Class 1</option><option>Class 2</option>
+            <option>Class 3</option><option>Class 4</option><option>Class 5</option><option>Class 6</option>
+            <option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10 (Matric)</option>
+          </select>
+        </div>
+      </div>
+      <div class="step-panel" data-step="2">
+        <h4>Parent / Guardian Details</h4>
+        <p class="step-desc">Parent or guardian contact information</p>
+        <div class="modal-field"><label>Parent/Guardian Name *</label><input type="text" id="admParent" required placeholder="Father or Mother name"/></div>
+        <div class="modal-field"><label>Phone Number *</label><input type="tel" id="admPhone" required placeholder="+92 300 0000000"/></div>
+        <div class="modal-field"><label>Email</label><input type="email" id="admEmail" placeholder="parent@email.com"/></div>
+        <div class="modal-field"><label>Address</label><textarea id="admAddress" placeholder="Home address..." style="min-height:70px;resize:vertical;"></textarea></div>
+      </div>
+      <div class="step-panel" data-step="3">
+        <h4>Review &amp; Submit</h4>
+        <p class="step-desc">Please review your information before submitting</p>
+        <div id="admReview" style="background:var(--off-white);border-radius:var(--radius);padding:1rem;font-size:0.9rem;line-height:1.8;color:var(--text);">
+          <div><strong>Student:</strong> <span id="rStudent">—</span></div>
+          <div><strong>DOB:</strong> <span id="rDob">—</span></div>
+          <div><strong>Gender:</strong> <span id="rGender">—</span></div>
+          <div><strong>Class:</strong> <span id="rClass">—</span></div>
+          <div><strong>Parent:</strong> <span id="rParent">—</span></div>
+          <div><strong>Phone:</strong> <span id="rPhone">—</span></div>
+          <div><strong>Email:</strong> <span id="rEmail">—</span></div>
+          <div><strong>Address:</strong> <span id="rAddress">—</span></div>
+        </div>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-top:0.75rem;">
+          <i class="fas fa-info-circle" style="color:var(--green);"></i> Our admissions team will review and contact you within 24 hours.
+        </p>
+      </div>
+      <div class="step-buttons" id="stepButtons" data-step="1">
+        <button class="btn btn-outline-green" id="admPrevBtn" style="display:none;" data-tooltip="Previous Step"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn btn-primary" id="admNextBtn" data-tooltip="Next Step">Next <i class="fas fa-arrow-right"></i></button>
+          <button class="btn btn-primary" id="submitAdmModal" style="display:none;" data-tooltip="Submit Application"><i class="fas fa-paper-plane"></i> Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Back to Top Button -->
+<a href="#" id="backToTopBtn" title="Back to Top" aria-label="Back to Top">&#8679;</a>
+
+<script>
+// ===== BACK TO TOP =====
+(function() {
+  var btn = document.getElementById('backToTopBtn');
+  if (!btn) return;
+  window.addEventListener('scroll', function() {
+    btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+  });
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+<!-- FLOATING ACTION BUTTON -->
+<button class="fab" id="fabBtn" data-tooltip="Quick Apply" data-tooltip-pos="left">
+  <span class="fab-icon">+</span>
+  <span class="fab-tooltip">Apply Now</span>
+</button>
+
+<script>
+// ===== TEACHER CAROUSEL AUTO-SLIDE =====
+(function() {
+  var track = document.getElementById('allTeachersGrid');
+  var prevBtn = document.getElementById('tcPrev');
+  var nextBtn = document.getElementById('tcNext');
+  var dotsContainer = document.getElementById('teacherDots');
+  if (!track) return;
+
+  var current = 0;
+  var autoSlide;
+  var items = track.querySelectorAll('.teacher-card');
+
+  function rebuild() {
+    items = track.querySelectorAll('.teacher-card');
+    if (!items.length) return;
+    dotsContainer.innerHTML = '';
+    for (var i = 0; i < items.length; i++) {
+      var dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === current ? ' active' : '');
+      dot.setAttribute('data-index', i);
+      dot.addEventListener('click', function() { goTo(parseInt(this.getAttribute('data-index'))); });
+      dotsContainer.appendChild(dot);
+    }
+    update();
+  }
+
+  function update() {
+    if (!items.length) return;
+    if (current >= items.length) current = 0;
+    if (current < 0) current = items.length - 1;
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    var dots = dotsContainer.querySelectorAll('.carousel-dot');
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === current); });
+  }
+
+  function goTo(index) {
+    current = index;
+    update();
+    resetAuto();
+  }
+
+  function next() { goTo((current + 1) % items.length); }
+  function prev() { goTo((current - 1 + items.length) % items.length); }
+
+  function resetAuto() {
+    clearInterval(autoSlide);
+    autoSlide = setInterval(next, 2000);
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', prev);
+  if (nextBtn) nextBtn.addEventListener('click', next);
+
+  function showCarousel() {
+    var skel = document.getElementById('teacherSkeleton');
+    var carousel = document.getElementById('teacherCarousel');
+    if (skel) skel.style.display = 'none';
+    if (carousel) carousel.style.display = '';
+  }
+
+  // Wait for renderTeachers to finish, then init
+  var observer = new MutationObserver(function() {
+    if (track.children.length) {
+      showCarousel();
+      rebuild();
+      resetAuto();
+    }
+  });
+  observer.observe(track, { childList: true });
+
+  // Fallback: if already rendered
+  setTimeout(function() {
+    if (track.children.length) {
+      showCarousel();
+      rebuild();
+      resetAuto();
+    }
+  }, 500);
+
+  // Pause on hover
+  var container = document.getElementById('teacherCarousel');
+  if (container) {
+    container.addEventListener('mouseenter', function() { clearInterval(autoSlide); });
+    container.addEventListener('mouseleave', resetAuto);
+  }
+})();
+
+/* ───── ACTIVE LINK HIGHLIGHT ───── */
+(function() {
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+
+  function linkMatchesPage(href) {
+    if (!href) return false;
+    if (href === '#home') return page === 'index.html' || page === '';
+    if (href.charAt(0) === '#') return false;          // in-page anchors never count
+    var hrefFile = href.split('/').pop().split('?')[0].split('#')[0];
+    return hrefFile === page;
+  }
+
+  document.querySelectorAll('.sidebar-link, .sidebar-sub-link').forEach(function(a) {
+    if (linkMatchesPage(a.getAttribute('href'))) {
+      a.classList.add('active');
+
+      // If this is a sub-link inside a dropdown, also activate + open the parent
+      var dropdown = a.closest('.sidebar-dropdown');
+      if (dropdown) {
+        dropdown.classList.add('open');
+        var toggle = dropdown.querySelector('.sidebar-dropdown-toggle');
+        if (toggle) toggle.classList.add('active');
+      }
+    }
+  });
+})();
+</script>
+
+<!-- LOGIN / REGISTER MODAL -->
+<div class="modal-overlay auth-modal" id="authModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-circle" style="color:var(--green);margin-right:8px;"></i><span id="authModalTitle">Account</span></h3>
+      <button class="modal-close" id="closeAuthModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-panel="login">Login</button>
+      <button class="auth-tab" data-panel="register">Register</button>
+    </div>
+    <div class="auth-panel active" id="loginPanel">
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <div class="password-wrapper">
+          <div style="position:relative;">
+            <input type="password" id="loginPassword" placeholder="Enter password" data-strength/>
+            <button type="button" class="password-toggle" data-target="loginPassword"><i class="fas fa-eye"></i></button>
+          </div>
+          <div class="password-strength" style="margin-top:8px;">
+            <div class="password-strength-bar"></div>
+            <div class="password-strength-bar"></div>
+            <div class="password-strength-bar"></div>
+          </div>
+          <span class="password-strength-text" style="display:block;margin-top:4px;"></span>
+        </div>
+      </div>
+      <div class="auth-error" id="loginError">Invalid email or password</div>
+      <div class="captcha-wrapper" id="loginCaptcha" style="margin:0.75rem 0;">
+        <div class="captcha-header" style="display:flex;align-items:center;gap:10px;">
+          <span class="captcha-challenge"></span>
+          <button type="button" class="captcha-refresh"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <input type="text" class="captcha-input" placeholder="Enter result" autocomplete="off" style="width:100%;margin-top:6px;padding:0.6rem 0.8rem;border:2px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;background:var(--off-white);color:var(--text);outline:none;box-sizing:border-box;"/>
+        <div class="captcha-feedback" style="font-size:0.8rem;margin-top:4px;"></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem;" id="loginBtn"><i class="fas fa-sign-in-alt"></i> &nbsp; Login</button>
+    </div>
+    <div class="auth-panel" id="registerPanel">
+      <div class="stepper" id="regStepper">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Profile</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Security</span>
+        </div>
+      </div>
+      <div class="step-panel active" data-step="1">
+        <h4>Profile Information</h4>
+        <p class="step-desc">Set up your profile</p>
+        <div class="auth-field">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="Your full name"/>
+        </div>
+        <div class="auth-field">
+          <label>Profile Avatar</label>
+          <div style="display:flex;align-items:center;gap:1rem;margin-top:0.5rem;">
+            <div class="avatar-circle" id="regAvatarPreview" style="width:60px;height:60px;font-size:1.4rem;flex-shrink:0;">
+              <span id="regAvatarInitial">U</span>
+            </div>
+            <div style="flex:1;">
+              <div class="file-drop-zone" id="regAvatarDropZone" style="padding:1rem;">
+                <i class="fas fa-cloud-upload-alt file-drop-zone-icon" style="font-size:1.8rem;"></i>
+                <p class="file-drop-zone-text">Drag &amp; drop photo here or click to browse</p>
+                <small class="file-drop-zone-hint">JPG, PNG, GIF accepted</small>
+                <input type="file" id="regAvatarInput" accept="image/*" style="display:none"/>
+              </div>
+              <button class="btn btn-outline-green" id="regAvatarClear" style="display:none;margin-top:6px;font-size:0.78rem;padding:4px 12px;width:100%;justify-content:center;">
+                <i class="fas fa-undo"></i> &nbsp; Remove Photo
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" placeholder="your@email.com"/>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <div style="position:relative;">
+              <input type="password" id="regPassword" placeholder="Min 6 characters" data-strength/>
+              <button type="button" class="password-toggle" data-target="regPassword"><i class="fas fa-eye"></i></button>
+            </div>
+            <div class="password-strength" style="margin-top:8px;">
+              <div class="password-strength-bar"></div>
+              <div class="password-strength-bar"></div>
+              <div class="password-strength-bar"></div>
+            </div>
+            <span class="password-strength-text" style="display:block;margin-top:4px;"></span>
+          </div>
+        </div>
+      </div>
+      <div class="step-panel" data-step="2">
+        <h4>Security Code</h4>
+        <p class="step-desc">Enter your 4-digit security code</p>
+        <div class="auth-field">
+          <label>Security Code</label>
+          <input type="hidden" id="regSecurityCode" value=""/>
+          <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:0.5rem;">
+            <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" style="width:56px;height:64px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--radius);outline:none;background:var(--off-white);color:var(--text);caret-color:var(--green);"/>
+            <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" style="width:56px;height:64px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--radius);outline:none;background:var(--off-white);color:var(--text);caret-color:var(--green);"/>
+            <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" style="width:56px;height:64px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--radius);outline:none;background:var(--off-white);color:var(--text);caret-color:var(--green);"/>
+            <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" style="width:56px;height:64px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--radius);outline:none;background:var(--off-white);color:var(--text);caret-color:var(--green);"/>
+          </div>
+        </div>
+      </div>
+      <div class="auth-error" id="registerError">Please fill all fields</div>
+      <div class="step-buttons" id="regStepButtons" data-step="1">
+        <button class="btn btn-outline-green" id="regPrevBtn" style="display:none;"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:0.75rem;margin-left:auto;">
+          <button class="btn btn-primary" id="regNextBtn">Next <i class="fas fa-arrow-right"></i></button>
+          <button class="btn btn-primary" id="registerBtn" style="display:none;"><i class="fas fa-user-plus"></i> &nbsp; Register</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE AVATAR MODAL -->
+<div class="modal-overlay" id="avatarModal" tabindex="0">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-camera" style="color:var(--green);margin-right:8px;"></i>Change Avatar</h3>
+      <button class="modal-close" id="closeAvatarModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div class="avatar-upload" style="justify-content:center;margin-bottom:1.5rem;">
+        <div class="avatar-circle" id="changeAvatarPreview" style="width:80px;height:80px;font-size:2rem;">
+          <span id="changeAvatarInitial">U</span>
+        </div>
+      </div>
+      <label class="btn btn-primary" for="changeAvatarInput" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;">
+        <i class="fas fa-upload"></i> &nbsp; Upload New Photo
+      </label>
+      <input type="file" id="changeAvatarInput" accept="image/*" style="display:none;"/>
+      <button class="btn btn-outline-green" id="resetAvatarBtn" style="margin-top:1rem;width:100%;justify-content:center;">
+        <i class="fas fa-undo"></i> &nbsp; Reset to Initial
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+<div class="modal-overlay" id="logoutConfirmModal" tabindex="0">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-sign-out-alt" style="color:var(--green);margin-right:8px;"></i>Confirm Logout</h3>
+      <button class="modal-close" id="closeLogoutModal" data-tooltip="Close" data-tooltip-pos="bottom">&#10005;</button>
+    </div>
+    <div class="modal-body" style="text-align:center;padding:1.5rem 0;">
+      <i class="fas fa-question-circle" style="font-size:3rem;color:var(--gold);margin-bottom:1rem;"></i>
+      <p style="font-size:1.1rem;color:var(--text);font-weight:600;">Hey, you sure you want to log out?</p>
+    </div>
+    <div class="modal-footer" style="justify-content:center;gap:1rem;">
+      <button class="btn btn-outline-green" id="cancelLogoutBtn" data-tooltip="Stay logged in">Cancel</button>
+      <button class="btn btn-danger" id="confirmLogoutBtn" data-tooltip="Log out now"><i class="fas fa-sign-out-alt"></i> &nbsp; Yes, Logout</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

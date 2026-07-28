@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Application to Principal | Westbridge School</title>
+  <link rel="icon" href="../images/logo.jpg" type="image/jpeg"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link rel="stylesheet" href="../css/animations.css"/>
+  <link rel="stylesheet" href="../css/features.css"/>
+  <link rel="stylesheet" href="../css/new-features.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .application-form {
+      max-width: 720px; margin: 0 auto;
+      background: var(--white); border-radius: var(--radius-lg);
+      border: 2px solid var(--border); padding: 2.5rem;
+      box-shadow: var(--shadow);
+    }
+    body.dark-mode .application-form {
+      background: #1e293b; border-color: #334155;
+    }
+    .application-form .form-group { margin-bottom: 1.25rem; }
+    .application-form .form-group label {
+      display: block; font-weight: 600; font-size: 0.88rem;
+      margin-bottom: 0.4rem; color: var(--green-dark);
+    }
+    .application-form .form-group input,
+    .application-form .form-group select,
+    .application-form .form-group textarea {
+      width: 100%; padding: 0.8rem 1rem;
+      border: 2px solid var(--border); border-radius: var(--radius);
+      font-family: var(--font-body); font-size: 0.95rem;
+      background: var(--white); color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s; outline: none; box-sizing: border-box;
+    }
+    .application-form .form-group input:focus,
+    .application-form .form-group select:focus,
+    .application-form .form-group textarea:focus {
+      border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,107,60,0.1);
+    }
+    body.dark-mode .application-form .form-group input,
+    body.dark-mode .application-form .form-group select,
+    body.dark-mode .application-form .form-group textarea {
+      background: #0f172a; border-color: #334155; color: #f1f5f9;
+    }
+    .application-form .form-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    @media (max-width: 600px) {
+      .application-form .form-row { grid-template-columns: 1fr; }
+    }
+    .application-form .btn-submit {
+      width: 100%; padding: 0.9rem; font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+  <style>
+#backToTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1a6fd4;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 48px;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  transition: background 0.2s, transform 0.2s, opacity 0.3s;
+  opacity: 0.9;
+}
+#backToTopBtn:hover {
+  background: #1558b0;
+  transform: translateY(-3px);
+  opacity: 1;
+}
+body.dark-mode #backToTopBtn {
+  background: #4a9eff;
+  color: #111;
+}
+body.dark-mode #backToTopBtn:hover {
+  background: #2a7ee0;
+}
+</style>
+</head>
+<body class="no-top-header">
+
+<div class="page-skeleton" id="pageSkeleton">
+  <div class="sk-nav"><div class="sk-nav-inner"><div class="sk-logo"></div><div class="sk-nav-links"><div class="sk-line"></div><div class="sk-line"></div><div class="sk-line"></div></div></div></div>
+  <div class="sk-hero"><div class="sk-hero-content"><div class="sk-line" style="width:50%;height:2rem;margin:0 auto 1rem;"></div><div class="sk-line" style="width:70%;height:1.2rem;margin:0 auto;"></div></div></div>
+  <div class="sk-section"><div class="sk-two-col"><div class="sk-col"><div class="sk-line" style="width:40%;height:1.5rem;margin-bottom:1rem;"></div><div class="sk-line"></div><div class="sk-line" style="width:60%;"></div></div><div class="sk-col"><div class="sk-img"></div></div></div></div>
+  <div class="sk-section"><div class="sk-grid"><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div></div></div>
+</div>
+
+<a href="#mainContent" class="skip-link">Skip to main content</a>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="toast-container" id="toastContainer"></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <img src="../images/logo.jpg" alt="Logo" data-tooltip="Westbridge School" data-tooltip-pos="right"/>
+      <span class="sidebar-logo-text" data-tooltip="Westbridge School" data-tooltip-pos="right">Westbridge School</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label" data-tooltip="Main Navigation" data-tooltip-pos="right">Main Menu</div>
+    <a href="../index.html"  class="sidebar-link" data-tooltip="Home" data-tooltip-pos="right"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="about.html"     class="sidebar-link" data-tooltip="About School" data-tooltip-pos="right"><i class="fas fa-school"></i><span>About School</span></a>
+    <div class="sidebar-dropdown">
+      <a href="#" class="sidebar-link sidebar-dropdown-toggle" id="sb-academics" data-tooltip="Academics" data-tooltip-pos="right">
+        <i class="fas fa-book-open"></i><span>Academics</span>
+        <i class="fas fa-chevron-down sidebar-chevron"></i>
+      </a>
+      <div class="sidebar-dropdown-menu">
+        <a href="teachers.html" class="sidebar-sub-link"><i class="fas fa-chalkboard-teacher"></i><span>Teachers</span></a>
+        <a href="subjects.html" class="sidebar-sub-link"><i class="fas fa-book-open"></i><span>Subjects</span></a>
+        <a href="../404.html" class="sidebar-sub-link" id="dd-timetable"><i class="fas fa-clock"></i><span>Timetable</span></a>
+      </div>
+    </div>
+    <a href="application.html" class="sidebar-link active" data-tooltip="Write Application" data-tooltip-pos="right"><i class="fas fa-pen-fancy"></i><span>Apply to Principal</span></a>
+    <a href="contact.html"   class="sidebar-link" data-tooltip="Contact" data-tooltip-pos="right"><i class="fas fa-envelope"></i><span>Contact</span></a>
+    <a href="results.html" class="sidebar-link" data-tooltip="Results" data-tooltip-pos="right"><i class="fas fa-trophy"></i><span>Results</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <i class="fas fa-graduation-cap" style="color:var(--gold);font-size:1.1rem;flex-shrink:0;" data-tooltip="Bridge to Success" data-tooltip-pos="right"></i>
+    <span>Bridge to Success</span>
+  </div>
+</aside>
+
+<div class="main-content" id="mainContent">
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <button class="hamburger" id="hamburger" aria-label="Toggle Sidebar" data-tooltip="Toggle Menu" data-tooltip-pos="bottom">
+          <span></span><span></span><span></span>
+        </button>
+        <img src="../images/logo.jpg" alt="Westbridge Logo" class="nav-logo" data-tooltip="Westbridge School" data-tooltip-pos="bottom"/>
+        <span class="nav-title">Westbridge Junior &amp; Upper School</span>
+      </div>
+      <div class="breadcrumb" style="flex:1;min-width:160px;text-align:center;"><a href="../index.html">Home</a> / <span style="color:var(--text-muted);">Application</span></div>
+      <div class="nav-right" style="display:flex;align-items:center;gap:0.75rem;">
+        <div class="search-wrapper"><input type="text" id="searchInput" placeholder="Search teachers, subjects..." autocomplete="off"><i class="fas fa-search search-icon"></i><div class="search-autocomplete" id="searchResults"></div></div>
+        <button class="theme-toggle" id="themeToggle" data-tooltip="Toggle Light/Dark Mode" data-tooltip-pos="bottom">&#127769; Dark</button>
+        <div class="nav-avatar" id="navAvatar" data-tooltip="Login / Register" data-tooltip-pos="bottom">
+          <div class="avatar-circle guest" id="avatarCircle"><i class="fas fa-user"></i></div>
+          <span class="avatar-name" id="avatarName">Guest</span>
+          <div class="user-dropdown" id="userDropdown">
+            <button class="user-dropdown-item" id="ud-profile"><i class="fas fa-user-circle"></i> My Profile</button>
+            <button class="user-dropdown-item" id="ud-avatar"><i class="fas fa-camera"></i> Change Avatar</button>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" id="ud-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Application to the Principal</h1>
+    <p>Write a formal application to the school principal</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="application-form" id="applicationForm">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="appName" placeholder="Your full name" required/>
+          </div>
+          <div class="form-group">
+            <label>Class *</label>
+            <select id="appClass" required>
+              <option value="">Select class...</option>
+              <option>Nursery</option><option>KG</option><option>Class 1</option><option>Class 2</option>
+              <option>Class 3</option><option>Class 4</option><option>Class 5</option><option>Class 6</option>
+              <option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10 (Matric)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Roll No.</label>
+            <input type="text" id="appRollNo" placeholder="Your roll number"/>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="appDate"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Subject / Application Type *</label>
+          <select id="appSubject" required>
+            <option value="">Select type...</option>
+            <option>Leave Application</option>
+            <option>Fee Concession</option>
+            <option>Transfer Certificate</option>
+            <option>Character Certificate</option>
+            <option>Change of Section</option>
+            <option>Change of Subject</option>
+            <option>Library Book Request</option>
+            <option>Complaint</option>
+            <option>General Request</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Application Body *</label>
+          <div class="toolbar">
+            <button onclick="format('bold', null, this)"><b>B</b></button>
+            <button onclick="format('italic', null, this)"><i>I</i></button>
+            <button onclick="format('underline', null, this)"><u>U</u></button>
+            <button onclick="format('insertUnorderedList', null, this)">• List</button>
+            <button onclick="format('insertOrderedList', null, this)">1. List</button>
+            <select onchange="format('fontSize', this.value, this)">
+              <option value="">Size</option>
+              <option value="1">10px</option>
+              <option value="3">16px</option>
+              <option value="5">24px</option>
+              <option value="7">36px</option>
+            </select>
+            <input type="color" onchange="format('foreColor', this.value, this)">
+          </div>
+          <div id="appRichContent" contenteditable="true" data-placeholder="Start typing here..."></div>
+          <input type="hidden" id="appRichContentHidden"/>
+        </div>
+
+        <div class="form-group">
+          <label>Additional Details</label>
+          <textarea id="appDetails" rows="3" placeholder="Any extra information you'd like to add..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-primary btn-submit" id="submitAppBtn"><i class="fas fa-paper-plane"></i> &nbsp; Submit Application</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h3>Westbridge Junior & Upper School</h3>
+        <p>Building bright futures through quality education and strong values.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="../index.html" data-tooltip="Go to Homepage">Home</a></li>
+          <li><a href="about.html" data-tooltip="About Our School">About</a></li>
+          <li><a href="teachers.html" data-tooltip="Meet Our Teachers">Teachers</a></li>
+          <li><a href="subjects.html" data-tooltip="View All Subjects">Subjects</a></li>
+          <li><a href="contact.html" data-tooltip="Get in Touch">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4>Contact</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Main Road, Lahore, Pakistan</p>
+        <p><i class="fas fa-phone"></i> +92 300 1234567</p>
+        <p><i class="fas fa-envelope"></i> info@westbridgeschool.edu</p>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2025 Westbridge Junior & Upper School. All Rights Reserved.</p></div>
+  </footer>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/main.js"></script>
+  <script src="../js/features.js"></script>
+</div>
+
+<button class="dark-toggle" id="darkToggle" data-tooltip="Toggle Dark / Light Mode" data-tooltip-pos="left">
+  <i class="fas fa-moon"></i>
+</button>
+
+<script>
+function format(cmd, value) {
+  document.execCommand(cmd, false, value || null);
+}
+(function() {
+  function getVal(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  document.getElementById('submitAppBtn').addEventListener('click', function() {
+    var name = getVal('appName');
+    var cls = getVal('appClass');
+    var subject = getVal('appSubject');
+    var rich = document.getElementById('appRichContent');
+    var body = rich ? rich.innerHTML.trim() : '';
+
+    if (!name || !cls || !subject || !body || body === '<br>') {
+      var toast = document.getElementById('toastContainer');
+      if (!toast) return;
+      var t = document.createElement('div');
+      t.className = 'toast warning';
+      t.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Please fill all required fields</span>';
+      toast.appendChild(t);
+      setTimeout(function() { t.remove(); }, 3000);
+      return;
+    }
+
+    var date = getVal('appDate') || new Date().toLocaleDateString();
+    var rollNo = getVal('appRollNo') || '—';
+    var details = getVal('appDetails') || '—';
+    var plainBody = rich ? rich.textContent.trim() : '';
+
+    var appData = {
+      name: name,
+      class: cls,
+      rollNo: rollNo,
+      date: date,
+      subject: subject,
+      body: body,
+      plainBody: plainBody,
+      details: details,
+      submittedAt: new Date().toISOString()
+    };
+
+    var saved = [];
+    try {
+      saved = JSON.parse(localStorage.getItem('wb-applications')) || [];
+    } catch(e) {}
+    saved.push(appData);
+    localStorage.setItem('wb-applications', JSON.stringify(saved));
+
+    if (rich) rich.innerHTML = '';
+    document.getElementById('appName').value = '';
+    document.getElementById('appClass').value = '';
+    document.getElementById('appRollNo').value = '';
+    document.getElementById('appDate').value = '';
+    document.getElementById('appSubject').value = '';
+    document.getElementById('appDetails').value = '';
+
+    var toast = document.getElementById('toastContainer');
+    if (!toast) return;
+    var t = document.createElement('div');
+    t.className = 'toast success';
+    t.innerHTML = '<i class="fas fa-check-circle"></i><span>Application submitted successfully!</span>';
+    toast.appendChild(t);
+    setTimeout(function() { t.remove(); }, 4000);
+  });
+})();
+</script>
+
+<a href="#" id="backToTopBtn" title="Back to Top" aria-label="Back to Top">&#8679;</a>
+
+<script>
+(function() {
+  var btn = document.getElementById('backToTopBtn');
+  if (!btn) return;
+  window.addEventListener('scroll', function() {
+    btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+  });
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+/* ───── ACTIVE LINK HIGHLIGHT ───── */
+(function() {
+  var page = window.location.pathname.split('/').pop() || 'index.html';
+
+  function linkMatchesPage(href) {
+    if (!href) return false;
+    if (href === '#home') return page === 'index.html' || page === '';
+    if (href.charAt(0) === '#') return false;          // in-page anchors never count
+    var hrefFile = href.split('/').pop().split('?')[0].split('#')[0];
+    return hrefFile === page;
+  }
+
+  document.querySelectorAll('.sidebar-link, .sidebar-sub-link').forEach(function(a) {
+    if (linkMatchesPage(a.getAttribute('href'))) {
+      a.classList.add('active');
+
+      // If this is a sub-link inside a dropdown, also activate + open the parent
+      var dropdown = a.closest('.sidebar-dropdown');
+      if (dropdown) {
+        dropdown.classList.add('open');
+        var toggle = dropdown.querySelector('.sidebar-dropdown-toggle');
+        if (toggle) toggle.classList.add('active');
+      }
+    }
+  });
+})();
+</script>
+<script src="../js/new-features.js"></script>
+
+<!-- LOGIN / REGISTER MODAL -->
+<div class="modal-overlay auth-modal" id="authModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-circle" style="color:var(--green);margin-right:8px;"></i><span id="authModalTitle">Account</span></h3>
+      <button class="modal-close" id="closeAuthModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-panel="login">Login</button>
+      <button class="auth-tab" data-panel="register">Register</button>
+    </div>
+    <div class="auth-panel active" id="loginPanel">
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="your@email.com"/>
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <div class="password-wrapper">
+          <div style="position:relative;">
+            <input type="password" id="loginPassword" placeholder="Enter password" data-strength/>
+            <button type="button" class="password-toggle" data-target="loginPassword"><i class="fas fa-eye"></i></button>
+          </div>
+          <div class="password-strength" style="margin-top:8px;">
+            <div class="password-strength-bar"></div>
+            <div class="password-strength-bar"></div>
+            <div class="password-strength-bar"></div>
+          </div>
+          <span class="password-strength-text" style="display:block;margin-top:4px;"></span>
+        </div>
+      </div>
+      <div class="auth-error" id="loginError">Invalid email or password</div>
+      <div class="captcha-wrapper" id="loginCaptcha" style="margin:0.75rem 0;">
+        <div class="captcha-header" style="display:flex;align-items:center;gap:10px;">
+          <span class="captcha-challenge"></span>
+          <button type="button" class="captcha-refresh"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <input type="text" class="captcha-input" placeholder="Enter result" autocomplete="off" style="width:100%;margin-top:6px;padding:0.6rem 0.8rem;border:2px solid var(--border);border-radius:var(--radius);font-family:var(--font-body);font-size:0.9rem;background:var(--off-white);color:var(--text);outline:none;box-sizing:border-box;"/>
+        <div class="captcha-feedback" style="font-size:0.8rem;margin-top:4px;"></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem;" id="loginBtn"><i class="fas fa-sign-in-alt"></i> &nbsp; Login</button>
+    </div>
+    <div class="auth-panel" id="registerPanel">
+      <div class="stepper" id="regStepper">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Profile</span>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Security</span>
+        </div>
+      </div>
+      <div class="step-panel active" data-step="1">
+        <h4>Profile Information</h4>
+        <p class="step-desc">Set up your profile</p>
+        <div class="auth-field">
+          <label>Full Name</label>
+          <input type="text" id="regName" placeholder="Your full name"/>
+        </div>
+        <div class="auth-field">
+          <label>Profile Avatar</label>
+          <div style="display:flex;align-items:center;gap:1rem;margin-top:0.5rem;">
+            <div class="avatar-circle" id="regAvatarPreview" style="width:60px;height:60px;font-size:1.4rem;flex-shrink:0;">
+              <span id="regAvatarInitial">U</span>
+            </div>
+            <div style="flex:1;">
+              <div class="file-drop-zone" id="regAvatarDropZone" style="padding:1rem;">
+                <i class="fas fa-cloud-upload-alt file-drop-zone-icon" style="font-size:1.8rem;"></i>
+                <p class="file-drop-zone-text">Drag &amp; drop photo here or click to browse</p>
+                <small class="file-drop-zone-hint">JPG, PNG, GIF accepted</small>
+                <input type="file" id="regAvatarInput" accept="image/*" style="display:none"/>
+              </div>
+              <button class="btn btn-outline-green" id="regAvatarClear" style="display:none;margin-top:6px;font-size:0.78rem;padding:4px 12px;width:100%;justify-content:center;">
+                <i class="fas fa-undo"></i> &nbsp; Remove Photo
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Email Address</label>
+          <input type="email" id="regEmail" placeholder="your@email.com"/>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <div style="position:relative;">
+              <input type="password" id="regPassword" placeholder="Min 6 characters" data-strength/>
+              <button type="button" class="password-toggle" data-target="regPassword"><i class="fas fa-eye"></i></button>
+            </div>
+            <div class="password-strength" style="margin-top:8px;">
+              <div class="password-strength-bar"></div>
+              <div class="password-strength-bar"></div>
+              <div class="password-strength-bar"></div>
+            </div>
+            <span class="password-strength-text" style="display:block;margin-top:4px;"></span>
+          </div>
+        </div>
+      </div>
+      <div class="step-panel" data-step="2">
+        <h4>Security Code</h4>
+        <p class="step-desc">Enter your 4-digit security code</p>
+        <div class="auth-field">
+          <label>Security Code</label>
+          <input type="hidden" id="regSecurityCode" value=""/>
+          <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:0.5rem;">
+            <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" style="width:56px;height:64px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--radius);outline:none;background:var(--off-white);color:var(--text);caret-color:var(--green);"/>
+            <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" style="width:56px;height:64px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--radius);outline:none;background:var(--off-white);color:var(--text);caret-color:var(--green);"/>
+            <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" style="width:56px;height:64px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--radius);outline:none;background:var(--off-white);color:var(--text);caret-color:var(--green);"/>
+            <input type="text" class="code-digit" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="off" style="width:56px;height:64px;text-align:center;font-size:1.5rem;font-weight:700;border:2px solid var(--border);border-radius:var(--radius);outline:none;background:var(--off-white);color:var(--text);caret-color:var(--green);"/>
+          </div>
+        </div>
+      </div>
+      <div class="auth-error" id="registerError">Please fill all fields</div>
+      <div class="step-buttons" id="regStepButtons" data-step="1">
+        <button class="btn btn-outline-green" id="regPrevBtn" style="display:none;"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:0.75rem;margin-left:auto;">
+          <button class="btn btn-primary" id="regNextBtn">Next <i class="fas fa-arrow-right"></i></button>
+          <button class="btn btn-primary" id="registerBtn" style="display:none;"><i class="fas fa-user-plus"></i> &nbsp; Register</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE AVATAR MODAL -->
+<div class="modal-overlay" id="avatarModal" tabindex="0">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-camera" style="color:var(--green);margin-right:8px;"></i>Change Avatar</h3>
+      <button class="modal-close" id="closeAvatarModal" data-tooltip="Close" data-tooltip-pos="bottom">✕</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <div class="avatar-upload" style="justify-content:center;margin-bottom:1.5rem;">
+        <div class="avatar-circle" id="changeAvatarPreview" style="width:80px;height:80px;font-size:2rem;">
+          <span id="changeAvatarInitial">U</span>
+        </div>
+      </div>
+      <label class="btn btn-primary" for="changeAvatarInput" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;">
+        <i class="fas fa-upload"></i> &nbsp; Upload New Photo
+      </label>
+      <input type="file" id="changeAvatarInput" accept="image/*" style="display:none;"/>
+      <button class="btn btn-outline-green" id="resetAvatarBtn" style="margin-top:1rem;width:100%;justify-content:center;">
+        <i class="fas fa-undo"></i> &nbsp; Reset to Initial
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOUT CONFIRMATION MODAL -->
+<div class="modal-overlay" id="logoutConfirmModal" tabindex="0">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-sign-out-alt" style="color:var(--green);margin-right:8px;"></i>Confirm Logout</h3>
+      <button class="modal-close" id="closeLogoutModal" data-tooltip="Close" data-tooltip-pos="bottom">&#10005;</button>
+    </div>
+    <div class="modal-body" style="text-align:center;padding:1.5rem 0;">
+      <i class="fas fa-question-circle" style="font-size:3rem;color:var(--gold);margin-bottom:1rem;"></i>
+      <p style="font-size:1.1rem;color:var(--text);font-weight:600;">Hey, you sure you want to log out?</p>
+    </div>
+    <div class="modal-footer" style="justify-content:center;gap:1rem;">
+      <button class="btn btn-outline-green" id="cancelLogoutBtn" data-tooltip="Stay logged in">Cancel</button>
+      <button class="btn btn-danger" id="confirmLogoutBtn" data-tooltip="Log out now"><i class="fas fa-sign-out-alt"></i> &nbsp; Yes, Logout</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

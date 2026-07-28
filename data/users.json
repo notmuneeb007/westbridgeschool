@@ -1,0 +1,29 @@
+[
+  {
+    "id": "mrj02k1wqs2hu8",
+    "name": "Abdul Muneeb",
+    "email": "allahdittaca@gmail.com",
+    "password": "$2b$10$fL98j3UovkhDVFY7GwgjD.hjenGzzrzVmMhNmyDyWTN55auW0YCIm",
+    "avatar": null,
+    "verified": false,
+    "createdAt": "2026-07-13T09:08:29.828Z"
+  },
+  {
+    "id": "mrj040mzjs5ujz",
+    "name": "Abdul Muneeb",
+    "email": "sabirsikandar4599@gmail.com",
+    "password": "$2b$10$TBJnHRm95saDOPMs3/FdUuEx3fHC95OT7M/GoKriE6QwcLWbfLtUq",
+    "avatar": null,
+    "verified": true,
+    "createdAt": "2026-07-13T09:09:37.980Z"
+  },
+  {
+    "id": "mrj07cv9v1746n",
+    "name": "Abdul Muneeb",
+    "email": "allahdittaca2@gmail.com",
+    "password": "$2b$10$x3XE7857oei4NDNWfUvizer538SI9Ky3D3BuefEqGEZJ262Bq6sKC",
+    "avatar": null,
+    "verified": false,
+    "createdAt": "2026-07-13T09:12:13.797Z"
+  }
+]
