@@ -462,11 +462,28 @@ body.dark-mode .faq-chevron { color: #60a5fa; }
 /* ═══ NAVBAR / TOP-HEADER sync with sidebar ═══ */
 .top-header, .navbar { transition: left 0.35s cubic-bezier(0.4,0,0.2,1), top 0.4s ease, box-shadow 0.3s; }
 
+/* ═══ HOVER STRIP — thin invisible trigger on left edge ═══ */
+.sidebar-hover-strip {
+  position: fixed; top: 0; left: 0; width: 24px; height: 100vh;
+  z-index: 1998; cursor: pointer;
+  background: transparent;
+  transition: background 0.3s;
+}
+.sidebar-hover-strip:hover {
+  background: rgba(26,58,107,0.08);
+}
+
+/* Hide hamburger on desktop, keep on mobile */
+@media (min-width: 769px) {
+  .hamburger { display: none !important; }
+}
+
 /* ═══ MOBILE ═════════════════════════════════ */
 @media (max-width: 768px) {
   .top-header, .navbar { left: 0 !important; }
   .toast-container { right: 12px; bottom: 82px; }
   .dark-toggle  { right: 16px; bottom: 76px; }
+  .sidebar-hover-strip { display: none; }
 }
 
 /* ═══ 12. AUTH SYSTEM ════════════════════════ */

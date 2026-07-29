@@ -264,13 +264,31 @@ h2 em { color: var(--green); font-style: normal; }
 .breadcrumb a { color: var(--gold); }
 
 /* ===== RESPONSIVE ===== */
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .section { padding: 4rem 1.5rem; }
+  .footer-grid { grid-template-columns: 1.2fr 1fr; gap: 2rem; }
+  .admission-cards { grid-template-columns: 1fr 1fr; }
+  .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* ── Small tablet / Large phone (≤ 900px) ── */
 @media (max-width: 900px) {
   .two-col { grid-template-columns: 1fr; gap: 2.5rem; }
   .stats-band { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .footer-brand { grid-column: 1 / -1; }
+  .admission-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .chart-stats-row { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Mobile (≤ 768px) ── */
 @media (max-width: 768px) {
+  .section { padding: 3rem 1rem; }
+  .container { padding: 0 1rem; }
+
+  /* Navbar */
   .nav-links {
     display: none; flex-direction: column; position: absolute;
     top: var(--nav-height); left: 0; right: 0; background: var(--white);
@@ -282,10 +300,82 @@ h2 em { color: var(--green); font-style: normal; }
   .nav-links li.dropdown { position: relative; }
   .dropdown-menu { position: static; box-shadow: none; border: 1px solid var(--border); margin-top: 0.5rem; border-radius: var(--radius); }
   .nav-links li:last-child .dropdown-menu { left: 0; right: auto; }
-  .stats-band { grid-template-columns: 1fr 1fr; }
-  .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .footer-grid { grid-template-columns: 1fr; }
   .nav-title { font-size: 0.95rem; }
+  .nav-logo { height: 42px; width: 42px; }
+
+  /* Hero */
+  .hero { min-height: 85vh; }
+  .hero-content { padding: 1.5rem; }
+  .hero-tag { font-size: 0.75rem; padding: 5px 14px; }
+  .hero-subtitle { font-size: 1rem; max-width: 100%; }
+  .hero-buttons { flex-direction: column; align-items: center; gap: 0.75rem; }
+  .hero-buttons .btn { width: 100%; max-width: 280px; text-align: center; }
+
+  /* Stats */
+  .stats-band { grid-template-columns: 1fr 1fr; padding: 1.5rem 1rem; }
+  .stat-num { font-size: 2.2rem; }
+  .stat-label { font-size: 0.8rem; }
+  .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0.75rem; }
+
+  /* Section headers */
+  .section-header { margin-bottom: 2rem; }
+  .section-label { font-size: 0.7rem; padding: 4px 14px; }
+
+  /* Values / Cards grids */
+  .values-grid { grid-template-columns: 1fr !important; }
+
+  /* Footer */
+  .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .footer { padding: 3rem 1rem 0; }
+  .footer-bottom { padding: 1rem 0; }
+  .footer-contact p { font-size: 0.85rem; }
+
+  /* Contact */
+  .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+  /* Admission */
+  .admission-cards { grid-template-columns: 1fr; }
+  .admission-form-box { border-radius: var(--radius); }
+  .adm-form-body { padding: 1.5rem; }
+  .adm-form-header { padding: 1.5rem; }
+
+  /* Notices */
+  .notice-item { flex-direction: column; gap: 0.8rem; padding: 1rem; }
+  .notice-date { min-width: auto; text-align: center; }
+
+  /* FAQ */
+  .faq-list { padding: 0; }
+  .faq-question { padding: 1rem 1.2rem; font-size: 0.92rem; }
+
+  /* Application form */
+  .application-form { padding: 1.5rem; border-radius: var(--radius); }
+
+  /* Page hero */
+  .page-hero { padding: calc(var(--nav-height) + 2rem) 1rem 2rem; }
+
+  /* Dark toggle & FAB */
+  .dark-toggle { right: 16px; bottom: 80px; width: 44px; height: 44px; }
+
+  /* Top header */
+  .top-header { height: 36px; }
+  .navbar { top: 36px; }
+  .hero { padding-top: calc(var(--nav-height) + 36px); }
+}
+
+/* ── Small phone (≤ 480px) ── */
+@media (max-width: 480px) {
+  .hero-title { font-size: 2.2rem; }
+  .hero-tag { font-size: 0.7rem; }
+  .stat-num { font-size: 1.8rem; }
+  .stat-label { font-size: 0.72rem; }
+  .section-header h2, .col-text h2 { font-size: 1.5rem; }
+  .footer h4 { font-size: 0.82rem; }
+  .footer-brand h3 { font-size: 1.1rem; }
+  .adm-form-header h3 { font-size: 1.2rem; }
+  .modal { padding: 1.5rem; max-width: 95vw; border-radius: 14px; }
+  .modal-header h3 { font-size: 1.05rem; }
+  .geo-map { height: 250px; }
+  .geo-map.small { height: 200px; }
 }
 
 /* ===== FLOATING TOP HEADER WITH MARQUEE ===== */
