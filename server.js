@@ -50,11 +50,10 @@ app.use('/api', require('./routes/contact'));
 app.use('/api', require('./routes/auth'));
 app.use('/api', require('./routes/admin'));
 
-// Connect to MongoDB before starting server
+// Start server after MongoDB attempt
 connectDB().then(() => {
   autoWhitelistLocalIP();
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
 });
