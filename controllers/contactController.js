@@ -1,14 +1,5 @@
-const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
 
 const htmlTemplate = fs.readFileSync(
   path.join(__dirname, "..", "templates", "contactEmail.html"),
@@ -32,13 +23,29 @@ exports.submitContact = async (req, res) => {
       .replace(/\{\{SUBJECT\}\}/g, subject)
       .replace(/\{\{MESSAGE\}\}/g, message);
 
-    await transporter.sendMail({
-      from: `"${name}" <${process.env.GMAIL_USER}>`,
-      to: process.env.TO_EMAIL,
-      replyTo: email,
-      subject: `Contact Form: ${subject}`,
-      html,
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: {
+          email: process.env.BREVO_SENDER_EMAIL || process.env.GMAIL_USER,
+          name: 'Westbridge School',
+        },
+        replyTo: { email, name },
+        to: [{ email: process.env.TO_EMAIL || process.env.GMAIL_USER }],
+        subject: `Contact Form: ${subject}`,
+        htmlContent: html,
+      }),
     });
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.message || `Brevo API error: ${response.status}`);
+    }
 
     return res.json({
       success: true,
