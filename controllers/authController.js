@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Otp = require('../models/Otp');
+const { sendMail } = require('../utils/mailer');
 
 function generateOTP() {
   return String(Math.floor(100000 + Math.random() * 900000));
@@ -33,28 +34,11 @@ async function sendOTPEmail(email, otp, name) {
     </html>
   `;
 
-  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: {
-      'accept': 'application/json',
-      'api-key': process.env.BREVO_API_KEY,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      sender: {
-        email: process.env.BREVO_SENDER_EMAIL || process.env.GMAIL_USER,
-        name: 'Westbridge School',
-      },
-      to: [{ email: email }],
-      subject: 'Your Verification Code - Westbridge School',
-      htmlContent: htmlContent,
-    }),
+  await sendMail({
+    to: email,
+    subject: 'Your Verification Code - Westbridge School',
+    html: htmlContent,
   });
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    throw new Error(errData.message || `Brevo API error: ${response.status}`);
-  }
 }
 
 exports.register = async (req, res) => {
