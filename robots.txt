@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adaptable-creation-production-21f3.up.railway.app/sitemap.xml
